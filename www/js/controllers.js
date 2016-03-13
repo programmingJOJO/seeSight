@@ -1,6 +1,20 @@
-angular.module('starter.controllers', [])
+var app = angular.module('starter.controllers', []);
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout) {
+app.factory('ToursService', function($http) {
+  var url = "http://localhost:3000/tours";
+
+  return {
+    tours: function() {
+      return $http.get(url)
+    },
+    getTour: function(id) {
+      return $http.get(url + '/' + id)
+    }
+  }
+});
+
+app.controller('AppCtrl', function($scope, $ionicModal, $timeout, $http, $ionicLoading) {
+  $scope.platform = ionic.Platform.platform();
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -41,18 +55,44 @@ angular.module('starter.controllers', [])
   };
 })
 
-.controller('PlaylistsCtrl', function($scope, $http) {
-  var url = "http://localhost:3000/places";
-
-  $http.get(url)
-      .success(function(places) {
-        $scope.places = places;
-        console.log(places);
-      })
-      .error(function() {
-        console.log('fail');
-      });
+.controller('ToursCtrl', function($log, $scope, $http, ToursService) {
+  var promise = ToursService.tours;
+  promise().then(
+  function(payload) {
+    $scope.tours = payload.data;
+  },
+  function(errorPayload) {
+    $log.error('failure loading movie', errorPayload);
+  });
 })
 
-.controller('PlaylistCtrl', function($scope, $stateParams) {
+.controller('TourCtrl', function($scope, tour) {
+  console.log(tour.data);
+  $scope.tour = tour.data;
+
+  angular.extend($scope, {
+    center: {
+      lat: 49.45052,
+      lng: 11.08048,
+      zoom: 12
+    },
+
+    defaults: {
+      zoomControl: false
+    },
+
+    layers: {
+      baselayers: {
+        osm: {
+          name: 'OpenStreetMap',
+          url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          type: 'xyz'
+        }
+      }
+    }
+  });
+
+  $scope.SkipItem = function(item) {
+    item.name = "Edited Item"
+  }
 });

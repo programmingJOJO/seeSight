@@ -1,0 +1,24 @@
+
+<ion-view view-title="Tour">
+  <ion-content>
+    <div class="item">
+      <p>{{place.name}}</p>
+    </div>
+    <div ng-controller="MapCtrl">
+      <!--<map on-create="mapCreated(map)"></map>-->
+    </div>
+    <div class="item">
+      <p>{{place.description}}</p>
+    </div>
+    <div class="item">
+      Nächster Zielort
+    </div>
+    <div class="item">
+      Tour pausieren
+    </div>
+  </ion-content>
+  <div class="bar bar-footer">
+    <button class="button button-clear">Nächster Zielort</button>
+    <button class="button button-clear">Tour pausieren</button>
+  </div>
+</ion-view>

@@ -1,0 +1,25 @@
+<ion-view view-title="Tour">
+  <ion-content>
+    <div class="item">
+      <p>{{tour.name}}</p>
+    </div>
+    <leaflet center="center" defaults="defaults" layers="layers" height="150px">
+      <input type="text" ng-model="center.lat" style="margin-left:200px;" />
+      <input type="text" ng-model="center.lng" style="margin-left:200px;" />
+    </leaflet>
+    <div class="item">
+      <p>{{tour.description}}</p>
+      <p><span class="balanced-bg" ng-repeat="tag in tour.tags">{{tag.name}} </span> </p>
+    </div>
+    <ion-list>
+      <div class="item item-divider">
+        Zielorte
+      </div>
+      <ion-item ng-repeat="place in tour.tour_places">
+        {{place.id}}
+        {{place.place.name}}
+        <ion-option-button class="button-default text-mute" ng-click="SkipItem(place)">Skip</ion-option-button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>

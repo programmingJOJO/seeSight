@@ -1,0 +1,23 @@
+<ion-view view-title="Touren">
+  <ion-content>
+    <ion-list>
+      <li class="item item-toggle">
+        Sortierung nach Vorlieben
+        <label class="toggle toggle-calm">
+          <input type="checkbox">
+          <div class="track">
+            <div class="handle"></div>
+          </div>
+        </label>
+      </li>
+      <div class="item item-divider">
+        Verfügbare Touren
+      </div>
+      <ion-item class="item item-icon-right" ng-repeat="tour in tours" ui-sref="app.tour_detail({tourId: tour.id})">
+        {{tour.id}}
+        {{tour.name}}
+        <i class="icon ion-ios-arrow-right"></i>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
