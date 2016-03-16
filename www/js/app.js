@@ -6,10 +6,27 @@
 // 'starter.controllers' is found in controllers.js
 var app = angular.module('starter', ['ionic','ionic.service.core', 'ionic.service.analytics', 'starter.controllers', 'starter.directives', 'leaflet-directive']);
 
-app.run(function($ionicPlatform, $ionicAnalytics, $rootScope, $ionicLoading) {
+app.factory('$localstorage', ['$window', function($window) {
+  return {
+    set: function(key, value) {
+      $window.localStorage[key] = value;
+    },
+    get: function(key, defaultValue) {
+      return $window.localStorage[key] || defaultValue;
+    },
+    setObject: function(key, value) {
+      $window.localStorage[key] = JSON.stringify(value);
+    },
+    getObject: function(key) {
+      return JSON.parse($window.localStorage[key] || '{}');
+    }
+  }
+}]);
+
+app.run(function($ionicPlatform, $ionicAnalytics, $rootScope, $ionicLoading, $localstorage) {
   $ionicPlatform.ready(function() {
     $rootScope.$on('loading:show', function() {
-      $ionicLoading.show({template: 'foo'})
+      $ionicLoading.show({template: 'L'})
     });
 
     $rootScope.$on('loading:hide', function() {
@@ -31,6 +48,7 @@ app.run(function($ionicPlatform, $ionicAnalytics, $rootScope, $ionicLoading) {
     }
   });
 });
+
 
 app.config(function($stateProvider, $urlRouterProvider) {
   // if none of the above states are matched, use this as the fallback
@@ -77,6 +95,36 @@ app.config(function($stateProvider, $urlRouterProvider) {
           }
         }
       }
+    })
+
+    .state('app.tour_start', {
+      url: '/tours/:tourId/places/:placeId',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/place.html',
+          controller: 'PlaceCtrl',
+          resolve: {
+            tour: function(ToursService, $stateParams) {
+              return ToursService.getTour($stateParams.tourId)
+            }
+          }
+        }
+      }
+    })
+
+    .state('app.tour_finish', {
+      url: '/tours/:tourId/finished',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/tour_finish.html',
+          controller: 'TourFinishCtrl',
+          resolve: {
+            tour: function(ToursService, $stateParams) {
+              return ToursService.getTour($stateParams.tourId)
+            }
+          }
+        }
+      }
     });
 });
 
@@ -85,11 +133,11 @@ app.config(function($httpProvider) {
   $httpProvider.interceptors.push(function($rootScope) {
     return {
       request: function(config) {
-        $rootScope.$broadcast('loading:show')
+        $rootScope.$broadcast('loading:show');
         return config
       },
       response: function(response) {
-        $rootScope.$broadcast('loading:hide')
+        $rootScope.$broadcast('loading:hide');
         return response
       }
     }

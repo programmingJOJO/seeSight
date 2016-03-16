@@ -3,11 +3,16 @@
     <div class="item">
       <p>{{tour.name}}</p>
     </div>
-    <leaflet center="center" defaults="defaults" layers="layers" height="150px">
+    <leaflet center="center" defaults="defaults" layers="layers" height="150px" markers="markers">
       <input type="text" ng-model="center.lat" style="margin-left:200px;" />
       <input type="text" ng-model="center.lng" style="margin-left:200px;" />
     </leaflet>
-    <div class="item">
+    <div id="start-button-item" class="item">
+      <button class="button-round button button-default button-fab button-icon-only button-assertive button-fab-top"
+              ui-sref="app.tour_start({tourId: tour.id, placeId: tour.tour_places[0].id})" fab-top="" fab-center="" fab="">
+        <span class="button-inner">LOS!</span>
+        <ion-button-effect></ion-button-effect>
+      </button>
       <p>{{tour.description}}</p>
       <p><span class="balanced-bg" ng-repeat="tag in tour.tags">{{tag.name}} </span> </p>
     </div>

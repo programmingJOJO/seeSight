@@ -3,3 +3,164 @@
     text-overflow: ellipsis;
     white-space: normal;
 }
+
+#start-button-item {
+    position: relative;
+    overflow: visible;
+}
+#start-button-item .button-fab {
+    top: -50%;
+    left: 50%;
+    margin-left: -28px;
+}
+
+.button-round {
+    width: 56px;
+    height: 56px;
+    line-height: 56px;
+    min-width: 0;
+    vertical-align: middle;
+    border-radius: 50%;
+    background-clip: padding-box;
+    overflow: hidden;
+    font-size: 14px;
+}
+
+.button-fab {
+    position: absolute;
+
+}
+.button-fab ion-icon {
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    font-size: 2.8rem;
+}
+
+[fab-center] {
+    left: 50%;
+    margin-left: -28px;
+}
+
+[fab-top] {
+    top: 16px;
+}
+
+[fab-right] {
+    right: 16px;
+}
+
+[fab-bottom] {
+    bottom: 16px;
+}
+
+[fab-left] {
+    left: 16px;
+}
+
+[fab-fixed] {
+    position: fixed;
+}
+
+.button-icon-left ion-icon {
+    padding-right: 0.3em;
+    font-size: 1.4em;
+    line-height: 0.67;
+    pointer-events: none;
+}
+
+.button-icon-right ion-icon {
+    padding-left: 0.4em;
+    font-size: 1.4em;
+    line-height: 0.67;
+    pointer-events: none;
+}
+
+.button-icon-only {
+    padding: 0;
+    min-width: 0.9em; }
+.button-icon-only ion-icon {
+    padding: 0 0.5em;
+    font-size: 1.8em;
+    line-height: 0.67;
+    pointer-events: none;
+}
+
+.pulse {
+    -webkit-animation: pulsate 2s ease-out infinite;
+    -moz-animation: pulsate 2s ease-out infinite;
+    -o-animation: pulsate 2s ease-out infinite;
+    animation: pulsate 2s ease-out infinite;
+    opacity: 1.0
+}
+
+@-webkit-keyframes pulsate {
+    0%   { opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { opacity: 0.3; }
+}
+@-moz-keyframes pulsate {
+    0%   { opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { opacity: 0.3; }
+}
+@-o-keyframes pulsate {
+    0%   { opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { opacity: 0.3; }
+}
+@keyframes pulsate {
+    0%   { opacity: 0.3; }
+    50% { opacity: 1; }
+    100% { opacity: 0.3; }
+}
+
+.shake {
+    animation: shake 4.1s cubic-bezier(.36,.07,.19,.97) infinite;
+    transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+@keyframes shake {
+    0%, 20% {
+        transform: translate3d(0px, 0, 0);
+    }
+    2%, 18% {
+        transform: translate3d(-1px, 0, 0);
+    }
+    4%, 16% {
+        transform: translate3d(2px, 0, 0);
+    }
+    6%, 10%, 14% {
+        transform: translate3d(-4px, 0, 0);
+    }
+    8%, 12% {
+        transform: translate3d(4px, 0, 0);
+    }
+}
+
+/* Star difficulty */
+.rating{
+    color: #a9a9a9;
+    margin: 0;
+    padding: 0;
+}
+
+ul.rating {
+    display: inline-block;
+}
+
+.rating li {
+    list-style-type: none;
+    display: inline-block;
+    padding: 1px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.rating .filled {
+    color: #21568b;
+}

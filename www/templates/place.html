@@ -1,24 +1,27 @@
 
-<ion-view view-title="Tour">
+<ion-view view-title="{{place.name}}">
   <ion-content>
-    <div class="item">
-      <p>{{place.name}}</p>
-    </div>
-    <div ng-controller="MapCtrl">
-      <!--<map on-create="mapCreated(map)"></map>-->
+    <leaflet center="center" defaults="defaults" height="150px" markers="markers"></leaflet>
+    <div id="start-button-item" class="item">
+      Hier gibt es etwas zu entdecken!
+      <button ng-show="delay" class="shake button-round button button-default button-icon-only button-assertive"
+              ng-click="showChallenge()">
+        <span class="button-inner">OK
+          <!--<i class="icon ion-ios-search-strong"></i>-->
+        </span>
+        <ion-button-effect></ion-button-effect>
+      </button>
     </div>
     <div class="item">
       <p>{{place.description}}</p>
     </div>
-    <div class="item">
-      Nächster Zielort
-    </div>
-    <div class="item">
-      Tour pausieren
-    </div>
   </ion-content>
-  <div class="bar bar-footer">
-    <button class="button button-clear">Nächster Zielort</button>
+  <div class="bar bar-footer" ng-if="(tour_place.id + 1) <= tour.tour_places.length">
     <button class="button button-clear">Tour pausieren</button>
+    <button class="button button-stable" ui-sref="app.tour_start({tourId: tour.id, placeId: nextPlaceId})">Nächster Zielort</button>
   </div>
+  <div class="bar bar-footer" ng-if="(tour_place.id + 1) > tour.tour_places.length">
+    <button class="button button-stable" ui-sref="app.home">Tour beenden</button>
+  </div>
+
 </ion-view>

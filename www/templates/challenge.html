@@ -1,0 +1,30 @@
+<ion-modal-view>
+  <ion-header-bar>
+    <h1 class="title">Rätsel</h1>
+    <div class="buttons">
+      <button class="button button-clear" ng-click="closeChallenge()"><i class="icon ion-ios-close-empty"></i></button>
+    </div>
+  </ion-header-bar>
+  <ion-content>
+    <div class="item">
+      <p>Schwierigkeitsgrad
+        <span star-rating rating-value="rating" max="3" readonly="true"></span>
+      </p>
+    </div>
+    <div class="item">
+      <p>{{challenge.question}}</p>
+    </div>
+    <form ng-submit="answerChallenge()">
+      <div class="list">
+        <label class="item item-input">
+          <span class="input-label">Antwort</span>
+          <input type="text" ng-model="challengeData.answer">
+        </label>
+        <label class="item">
+          <button class="button button-block button-positive" type="submit">Ok, ich hab's!</button>
+          <button class="button button-block button-clear" type="button" ng-click="closeChallenge()">Lieber doch später</button>
+        </label>
+      </div>
+    </form>
+  </ion-content>
+</ion-modal-view>
