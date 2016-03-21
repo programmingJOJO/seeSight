@@ -4,29 +4,22 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-var app = angular.module('starter', ['ionic','ionic.service.core', 'ionic.service.analytics', 'starter.controllers', 'starter.directives', 'leaflet-directive']);
+var app = angular.module('starter',
+    [
+      'ionic',
+      'ionic.service.core',
+      'ionic.service.analytics',
+      'ngResource',
+      'ngCordova',
+      'starter.controllers',
+      'starter.directives',
+      'leaflet-directive'
+    ]);
 
-app.factory('$localstorage', ['$window', function($window) {
-  return {
-    set: function(key, value) {
-      $window.localStorage[key] = value;
-    },
-    get: function(key, defaultValue) {
-      return $window.localStorage[key] || defaultValue;
-    },
-    setObject: function(key, value) {
-      $window.localStorage[key] = JSON.stringify(value);
-    },
-    getObject: function(key) {
-      return JSON.parse($window.localStorage[key] || '{}');
-    }
-  }
-}]);
-
-app.run(function($ionicPlatform, $ionicAnalytics, $rootScope, $ionicLoading, $localstorage) {
+app.run(function($ionicPlatform, $ionicAnalytics, $rootScope, $ionicLoading, $localstorage, $cordovaDevice, User) {
   $ionicPlatform.ready(function() {
     $rootScope.$on('loading:show', function() {
-      $ionicLoading.show({template: 'L'})
+      $ionicLoading.show({template: 'Lädt'})
     });
 
     $rootScope.$on('loading:hide', function() {
@@ -45,6 +38,37 @@ app.run(function($ionicPlatform, $ionicAnalytics, $rootScope, $ionicLoading, $lo
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
+    }
+
+    if (ionic.Platform.isWebView()) {
+      // the window and scripts are fully loaded, and a cordova/phonegap
+      // object exists then let's listen for the deviceready
+      var device = $cordovaDevice.getDevice();
+      $rootScope.manufacturer = device.manufacturer;
+      $rootScope.model = device.model;
+      $rootScope.platform = device.platform;
+      $rootScope.uuid = device.uuid;
+    } else {
+      // the window and scripts are fully loaded, but the window object doesn't have the
+      // cordova/phonegap object, so its just a browser, not a webview wrapped w/ cordova
+      $rootScope.manufacturer = 'test';
+      $rootScope.model = 'test';
+      $rootScope.platform = 'browser';
+      $rootScope.uuid = $localstorage.get("uuid") || 16789;
+    }
+
+    // Create guest
+    if ($localstorage.get("seeSight_user_token")) {
+      var user = User.get({token: $localstorage.get("seeSight_user_token")}, function() {
+        $localstorage.set("seeSight_user_token", user.token );
+      });
+    } else {
+      var user = new User({});
+      user.$save(function(user, putResponseHeaders) {
+        //user => saved user object
+        //putResponseHeaders => $http header getter
+        $localstorage.set("seeSight_user_token", user.token );
+      });
     }
   });
 });
@@ -77,7 +101,12 @@ app.config(function($stateProvider, $urlRouterProvider) {
       views: {
         'menuContent': {
           templateUrl: 'templates/tours.html',
-          controller: 'ToursCtrl'
+          controller: 'ToursCtrl',
+          resolve: {
+            tours: function(ToursService) {
+              return ToursService.tours()
+            }
+          }
         }
       }
     })
@@ -130,6 +159,8 @@ app.config(function($stateProvider, $urlRouterProvider) {
 
 app.config(function($httpProvider) {
   $httpProvider.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
+  $httpProvider.defaults.useXDomain = true;
+  delete $httpProvider.defaults.headers.common['X-Requested-With'];
   $httpProvider.interceptors.push(function($rootScope) {
     return {
       request: function(config) {

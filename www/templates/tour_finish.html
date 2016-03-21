@@ -1,15 +1,29 @@
 
 <ion-view view-title="Tour">
   <ion-content>
-    <div class="item">
-      Die Tour ist leider schon zu Ende.
-      <i class="icon"></i>
+    <div class="row">
+      <div class="col text-center"><i style="font-size: 800%;" class="icon ion-map"></i></div>
     </div>
-    <div class="item">
-      <span star-rating rating-value="rating" max="3" on-rating-selected="saveRatingToServer(rating)"></span>
+    <div class="row">
+      <div class="col text-center">
+        <h4>Die Tour ist leider schon zu Ende.</h4>
+      </div>
     </div>
-    <div class="item">
-      Tour beenden
+    <div class="row">
+      <div class="col text-center">
+        <p>Hat dir die Tour gefallen? Dann bewerte sie mithilfe der Sternchen und klicke dann auf Tour beenden.</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col text-center">
+        <span star-rating rating-value="rating" max="3" on-rating-selected="saveRatingToServer(rating)"></span>
+      </div>
+    </div>
+    <div class="row">
+      <button class="button button-full button-positive" ui-sref="app.home">Tour beenden</button>
+    </div>
+    <div class="row">
+      <button class="button button-full button-light">Zurück</button>
     </div>
   </ion-content>
 </ion-view>

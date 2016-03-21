@@ -164,3 +164,48 @@ ul.rating {
 .rating .filled {
     color: #21568b;
 }
+
+/* Footer, Subfooter buttons */
+.bar-footer button, .bar-subfooter button {
+    margin: 0 !important;
+}
+.auto-height {
+    height: auto;
+}
+.bar .button-large{
+    line-height: 53px;
+}
+
+/* Ion list header */
+ion-list-header {
+    position: relative;
+    padding: 10px 16px 10px 16px;
+    font-weight: 500;
+    letter-spacing: 0.1rem;
+    text-transform: uppercase;
+    color: #333;
+    border-bottom: 1px solid #c8c7cc;
+}
+ion-list-header {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* Animate show hide */
+.animate-show {
+    line-height: 20px;
+    opacity: 1;
+    padding: 10px;
+    border: 1px solid black;
+    background: white;
+}
+.animate-show.ng-hide-add, .animate-show.ng-hide-remove {
+    transition: all linear 0.5s;
+}
+.animate-show.ng-hide {
+    line-height: 0;
+    opacity: 0;
+    padding: 0 10px;
+}

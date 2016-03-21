@@ -1,15 +1,16 @@
 <ion-view view-title="Tour">
-  <ion-content>
-    <div class="item">
-      <p>{{tour.name}}</p>
-    </div>
-    <leaflet center="center" defaults="defaults" layers="layers" height="150px" markers="markers">
+  <div class="bar bar-subheader">
+    <h2 class="title">{{tour.name}}</h2>
+  </div>
+  <ion-content class="has-subheader">
+    <leaflet center="center" defaults="defaults" height="150px" markers="markers">
       <input type="text" ng-model="center.lat" style="margin-left:200px;" />
       <input type="text" ng-model="center.lng" style="margin-left:200px;" />
     </leaflet>
     <div id="start-button-item" class="item">
       <button class="button-round button button-default button-fab button-icon-only button-assertive button-fab-top"
-              ui-sref="app.tour_start({tourId: tour.id, placeId: tour.tour_places[0].id})" fab-top="" fab-center="" fab="">
+              ui-sref="app.tour_start({tourId: tour.id, placeId: tour.tour_places[0].id})" fab-top="" fab-center="" fab=""
+              ng-click="newUserTour()">
         <span class="button-inner">LOS!</span>
         <ion-button-effect></ion-button-effect>
       </button>
@@ -20,10 +21,17 @@
       <div class="item item-divider">
         Zielorte
       </div>
-      <ion-item ng-repeat="place in tour.tour_places">
-        {{place.id}}
-        {{place.place.name}}
-        <ion-option-button class="button-default text-mute" ng-click="SkipItem(place)">Skip</ion-option-button>
+      <ion-item ng-repeat="tour_place in (correctTourPlaces = (tour.tour_places | orderBy:'id'))" ng-class="{'item-button-right': isPlaceVisited(correctTourPlaces[$index - 1]) && !isPlaceVisited(tour_place)}">
+        {{tour_place.id}}
+        {{tour_place.place.name}}
+        <span ng-if="isPlaceVisited(tour_place)" class="item-note">
+          bereits besucht
+        </span>
+        <button class="button button-positive"
+                ng-if="isPlaceVisited(correctTourPlaces[$index - 1]) && !isPlaceVisited(tour_place)"
+                ui-sref="app.tour_start({tourId: tour.id, placeId: tour_place.place.id})">
+          Weiter
+        </button>
       </ion-item>
     </ion-list>
   </ion-content>

@@ -14,12 +14,20 @@
     <div class="item">
       <p>{{challenge.question}}</p>
     </div>
+    <div class="item animate-show" ng-class="correct_answer ? 'item-balanced' : 'item-assertive'" ng-show="show_notification">
+      {{correct_answer ? 'Gratulation! Das war korrekt!' : 'Versuch es noch einmal!'}}
+    </div>
     <form ng-submit="answerChallenge()">
-      <div class="list">
+      <div class="list list-inset" ng-if="challenge.challenge_solutions.length == 1">
         <label class="item item-input">
-          <span class="input-label">Antwort</span>
-          <input type="text" ng-model="challengeData.answer">
+          <input type="text" placeholder="Antwort" ng-model="challengeData.answer">
         </label>
+      </div>
+      <ion-list ion-radio ng-if="challenge.challenge_solutions.length > 1">
+        <ion-list-header>Möglichkeiten</ion-list-header>
+        <ion-radio ng-repeat="s in challenge.challenge_solutions" ng-model="challengeData.answer" ng-value="s.answer">{{s.answer}}</ion-radio>
+      </ion-list>
+      <div class="list">
         <label class="item">
           <button class="button button-block button-positive" type="submit">Ok, ich hab's!</button>
           <button class="button button-block button-clear" type="button" ng-click="closeChallenge()">Lieber doch später</button>
