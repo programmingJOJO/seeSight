@@ -10,7 +10,8 @@
     <div id="start-button-item" class="item">
       <button class="button-round button button-default button-fab button-icon-only button-assertive button-fab-top"
               ui-sref="app.tour_start({tourId: tour.id, placeId: tour.tour_places[0].id})" fab-top="" fab-center="" fab=""
-              ng-click="newUserTour()">
+              ng-click="newUserTour()"
+              ng-if="!userTourExists()">
         <span class="button-inner">LOS!</span>
         <ion-button-effect></ion-button-effect>
       </button>
@@ -27,10 +28,10 @@
         <span ng-if="isPlaceVisited(tour_place)" class="item-note">
           bereits besucht
         </span>
-        <button class="button button-positive"
+        <button class="button button-assertive"
                 ng-if="isPlaceVisited(correctTourPlaces[$index - 1]) && !isPlaceVisited(tour_place)"
                 ui-sref="app.tour_start({tourId: tour.id, placeId: tour_place.place.id})">
-          Weiter
+          Fortsetzen
         </button>
       </ion-item>
     </ion-list>

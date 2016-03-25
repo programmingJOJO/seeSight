@@ -15,7 +15,9 @@ app.controller('AppCtrl', function($scope) {
 app.controller('ToursCtrl', function($log, $scope, $http, $localstorage, tours, UserTour) {
   $scope.tours = tours.data;
   $scope.$on('$ionicView.enter', function(){
-    UserTour.query({token: $localstorage.get("seeSight_user_token")}).$promise.then(function(response) {
+    UserTour.query({
+      token: $localstorage.get("seeSight_user_token")
+    }).$promise.then(function(response) {
       $scope.user_tours = response;
     });
   });
@@ -28,20 +30,32 @@ app.controller('ToursCtrl', function($log, $scope, $http, $localstorage, tours, 
 app.controller('TourCtrl', function($scope, $stateParams, $filter, $localstorage, UserTour, UserTourPlace, tour) {
   $scope.tour = tour.data;
   $scope.$on('$ionicView.enter', function(){
-    if ($localstorage.get("selected_user_tour") != undefined) {
-      UserTourPlace.query({token: $localstorage.get("seeSight_user_token"), user_tour_id: $localstorage.get("selected_user_tour")}).$promise.then(function(response) {
-        $scope.user_tour_places = response;
+    if ($localstorage.get("selected_user_tour") && $localstorage.get("selected_user_tour") != null && $localstorage.get("selected_user_tour") != 'undefined' && $localstorage.get("selected_user_tour") !== undefined) {
+      UserTour.get({
+        token: $localstorage.get("seeSight_user_token"),
+        id: $localstorage.get("selected_user_tour")
+      }).$promise.then(function(response) {
+        $scope.user_tour = response;
+        $scope.user_tour_places = $scope.user_tour.user_tour_places;
       });
     }
   });
 
+  $scope.userTourExists = function() {
+    return ($scope.user_tour && $scope.user_tour.id);
+  };
+
   $scope.isPlaceVisited = function(tour_place) {
-    if (!tour_place) {
-      return false;
-    }
-    var found = $filter('filter')($scope.user_tour_places || [], { place_id: parseInt(tour_place.place_id) }, true);
-    if (found.length) {
-      return found[0].visited;
+    if ($scope.userTourExists()) {
+      if (!tour_place) {
+        return true; // user_tour has already no visited places
+      }
+      var found = $filter('filter')($scope.user_tour_places || [], { place_id: parseInt(tour_place.place_id) }, true);
+      if (found.length) {
+        return found[0].visited;
+      } else {
+        return false;
+      }
     } else {
       return false;
     }
@@ -68,8 +82,12 @@ app.controller('TourCtrl', function($scope, $stateParams, $filter, $localstorage
   });
 
   $scope.newUserTour = function() {
+    console.log('NEW USER TOUR');
     var userTour = new UserTour({tour_id: $scope.tour.id, token: $localstorage.get("seeSight_user_token") });
-    userTour.$save();
+    userTour.$save(function (userTour, headers) {
+      console.log('USER TOUR SAVED');
+      $localstorage.set("selected_user_tour", userTour.id);
+    });
   };
 });
 
@@ -85,8 +103,13 @@ app.controller('PlaceCtrl', function($log, $scope, $ionicModal, ChallengeService
   }
 
   $scope.placeIsVisited = function(place) {
-    if ($localstorage.get("selected_user_tour") != undefined) {
-      UserTourPlace.get({id: 1, token: $localstorage.get("seeSight_user_token"), user_tour_id: $localstorage.get("selected_user_tour"), place_id: $scope.place.id}, function(userTourPlace) {
+    if ($localstorage.get("selected_user_tour") && $localstorage.get("selected_user_tour") != null && $localstorage.get("selected_user_tour") != 'undefined' && $localstorage.get("selected_user_tour") !== undefined) {
+      UserTourPlace.get({
+        id: 1,
+        token: $localstorage.get("seeSight_user_token"),
+        user_tour_id: $localstorage.get("selected_user_tour"),
+        place_id: $scope.place.id
+      }, function(userTourPlace) {
         userTourPlace.visited = true;
         userTourPlace.$save();
       });
@@ -122,29 +145,29 @@ app.controller('PlaceCtrl', function($log, $scope, $ionicModal, ChallengeService
   });
   $scope.markers.push(mainMarker);
 
-  $scope.delay = false;
-  $timeout(function(){
-    $scope.delay = true;
-  }, 1000);
-
-
   // Challenge
-
 
   $scope.correct_answer = false;
   $scope.show_notification = false;
   $scope.rating = 1;
-  var promise = ChallengeService.challenges($scope.place.id);
-  promise.then(
-    function(payload) {
-      $scope.challenge = payload.data[0];
-      if($scope.challenge != undefined) {
-        $scope.rating = $scope.challenge.difficulty;
-      }
-    },
-    function(errorPayload) {
-      $log.error('failure loading tours', errorPayload);
+  $scope.$on('$ionicView.enter', function(){
+    var promise = ChallengeService.challenges($scope.place.id);
+    promise.then(
+        function(payload) {
+          $scope.challenge = payload.data[0];
+          if($scope.challenge) {
+            $scope.rating = $scope.challenge.difficulty;
+          }
+        },
+        function(errorPayload) {
+          $log.error('failure loading tours', errorPayload);
+        });
   });
+
+  $scope.challengeExists = function() {
+    return ($scope.challenge && $scope.challenge.id);
+  };
+
   // Form data for the login modal
   $scope.challengeData = {};
 
@@ -170,11 +193,7 @@ app.controller('PlaceCtrl', function($log, $scope, $ionicModal, ChallengeService
   $scope.answerChallenge = function() {
     var correct_answer = $filter('filter')($scope.challenge.challenge_solutions, { truth: true }, true);
     if(correct_answer.length) {
-      if(correct_answer[0].answer.toLowerCase() == $scope.challengeData.answer.toLowerCase()) {
-        $scope.correct_answer = true;
-      } else {
-        $scope.correct_answer = false;
-      }
+      $scope.correct_answer = (correct_answer[0].answer.toLowerCase() == $scope.challengeData.answer.toLowerCase());
     }
     $scope.show_notification = true;
     // Simulate a login delay. Remove this and replace with your login
@@ -186,9 +205,27 @@ app.controller('PlaceCtrl', function($log, $scope, $ionicModal, ChallengeService
   };
 });
 
-app.controller('TourFinishCtrl', function($scope, tour) {
-  $scope.saveRatingToServer = function(rating) {
-    // TODO: http to server
-  };
+app.controller('TourFinishCtrl', function($scope, $localstorage, UserTour, UserTourChallenge, tour) {
+  $scope.rating = 2;
+  if ($localstorage.get("selected_user_tour") && $localstorage.get("selected_user_tour") != null && $localstorage.get("selected_user_tour") != 'undefined' && $localstorage.get("selected_user_tour") !== undefined) {
+    UserTour.get({
+      token: $localstorage.get("seeSight_user_token"),
+      id: $localstorage.get("selected_user_tour")
+    }, function(userTour) {
+      userTour.completed = true;
+      userTour.$save({token: $localstorage.get("seeSight_user_token")});
+    });
+  }
 
+  $scope.saveRatingToServer = function(rating) {
+    if ($localstorage.get("selected_user_tour") && $localstorage.get("selected_user_tour") != null && $localstorage.get("selected_user_tour") != 'undefined' && $localstorage.get("selected_user_tour") !== undefined) {
+      UserTour.get({
+        token: $localstorage.get("seeSight_user_token"),
+        id: $localstorage.get("selected_user_tour")
+      }, function (userTour) {
+        userTour.rating = rating;
+        userTour.$save({token: $localstorage.get("seeSight_user_token")});
+      });
+    }
+  };
 });

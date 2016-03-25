@@ -4,17 +4,14 @@ app.factory( 'Resource', [ '$resource', function( $resource ) {
       update: { method: 'put', isArray: false },
       create: { method: 'post' }
     };
-
     methods = angular.extend( defaults, methods );
-
     var resource = $resource( url, params, methods );
-
     resource.prototype.$save = function() {
       if ( !this.id ) {
-        return this.$create();
+        return this.$create.apply(this, arguments);
       }
       else {
-        return this.$update();
+        return this.$update.apply(this, arguments);
       }
     };
     return resource;
@@ -25,12 +22,14 @@ app.factory('User', function($resource, $localstorage) {
   return $resource('http://localhost:3000/users/:token', {token: $localstorage.get("seeSight_user_token")});
 });
 app.factory('UserTour', [ 'Resource', function( $resource ) {
-  return $resource('http://localhost:3000/user_tours');
+  return $resource('http://localhost:3000/user_tours/:id', { id: "@id" });
 }]);
 app.factory('UserTourPlace', [ 'Resource', function( $resource ) {
   return $resource('http://localhost:3000/user_tour_places/:id', { id: "@id" });
 }]);
-
+app.factory('UserTourChallenge', [ 'Resource', function( $resource ) {
+  return $resource('http://localhost:3000/user_tour_challenges/:id', { id: "@id" });
+}]);
 
 
 

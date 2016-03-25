@@ -16,14 +16,19 @@
     </div>
     <div class="row">
       <div class="col text-center">
-        <span star-rating rating-value="rating" max="3" on-rating-selected="saveRatingToServer(rating)"></span>
+        <span star-rating rating-value="rating" max="3" on-rating-selected="saveRatingToServer(rating)" style="font-size: 250%;"></span>
       </div>
     </div>
     <div class="row">
-      <button class="button button-full button-positive" ui-sref="app.home">Tour beenden</button>
-    </div>
-    <div class="row">
-      <button class="button button-full button-light">Zurück</button>
+      <div class="col text-center">
+        <h4>Glückwunsch! {{}} von {{}} Rätseln gelöst!</h4>
+      </div>
     </div>
   </ion-content>
+  <div class="bar bar-subfooter auto-height" style="bottom: 0px;">
+    <button class="button button-positive button-full button-large"
+            ui-sref="app.home">
+            Zurück zum Hauptmenü
+    </button>
+  </div>
 </ion-view>
