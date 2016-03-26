@@ -1,5 +1,9 @@
 <ion-view view-title="Touren">
   <ion-content>
+    <ion-item class="item item-icon-left">
+      <p>Wähle eine Tour aus der Liste und verschaffe dir einen Überblick über die Sehenswürdigkeiten.</p>
+      <i class="icon ion-ios-information"></i>
+    </ion-item>
     <ion-list>
       <li class="item item-toggle">
         Sortierung nach Vorlieben
@@ -11,10 +15,12 @@
         </label>
       </li>
       <div class="item item-divider">
-        Meine Touren
+        Verfügbare Touren
       </div>
-      <ion-item class="item item-icon-right" ng-repeat="user_tour in user_tours" ng-click="selectUserTour(user_tour.id)" ui-sref="app.tour_detail({tourId: user_tour.tour.id})">
-        {{user_tour.id}}
+      <ion-item class="item item-icon-right"
+                ng-repeat="user_tour in user_tours"
+                ng-click="selectUserTour(user_tour.id)"
+                ui-sref="app.tour_detail({tourId: user_tour.tour.id})">
         {{user_tour.tour.name}}
         <span ng-if="!user_tour.completed" class="item-note">
           pausiert
@@ -22,19 +28,6 @@
         <span ng-if="user_tour.completed" class="item-note">
           abgeschlossen
         </span>
-        <i class="icon ion-ios-arrow-right"></i>
-      </ion-item>
-      <ion-item class="item item-icon-left" ng-show="user_tours.length < 1">
-        <p>Angefangene, pausierte oder selbst erstellte Touren findest du in diesem Bereich.</p>
-        <i class="icon ion-ios-information"></i>
-      </ion-item>
-
-      <div class="item item-divider">
-        Verfügbare Touren
-      </div>
-      <ion-item class="item item-icon-right" ng-repeat="tour in tours" ui-sref="app.tour_detail({tourId: tour.id})">
-        {{tour.id}}
-        {{tour.name}}
         <i class="icon ion-ios-arrow-right"></i>
       </ion-item>
     </ion-list>

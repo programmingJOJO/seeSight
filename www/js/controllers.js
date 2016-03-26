@@ -1,14 +1,27 @@
 var app = angular.module('starter.controllers', []);
 
-app.controller('AppCtrl', function($scope) {
+app.controller('AppCtrl', function($scope, $localstorage, $filter, UserTour, UserTourChallenge) {
   $scope.platform = ionic.Platform.platform();
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
   // listen for the $ionicView.enter event:
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
+  $scope.$on('$ionicView.enter', function(e) {
+    UserTour.query({
+      token: $localstorage.get("seeSight_user_token")
+    }).$promise.then(function(response) {
+      $scope.user_tours = response;
+      $scope.conmpleted_user_tours = $filter('filter')($scope.user_tours, { completed: true }, true);
+    });
+
+    UserTourChallenge.query({
+      token: $localstorage.get("seeSight_user_token")
+    }).$promise.then(function(response) {
+      $scope.user_tour_challenges = response;
+      $scope.unsolved_user_tour_challenges = $filter('filter')($scope.user_tour_challenges, { state: 3 }, false);
+    });
+  });
 
 });
 
@@ -41,12 +54,12 @@ app.controller('TourCtrl', function($scope, $stateParams, $filter, $localstorage
     }
   });
 
-  $scope.userTourExists = function() {
-    return ($scope.user_tour && $scope.user_tour.id);
+  $scope.userTourHasPause = function() {
+    return ($scope.user_tour && $scope.user_tour.user_tour_places[0].visited);
   };
 
   $scope.isPlaceVisited = function(tour_place) {
-    if ($scope.userTourExists()) {
+    if ($scope.userTourHasPause()) {
       if (!tour_place) {
         return true; // user_tour has already no visited places
       }
@@ -91,7 +104,7 @@ app.controller('TourCtrl', function($scope, $stateParams, $filter, $localstorage
   };
 });
 
-app.controller('PlaceCtrl', function($log, $scope, $ionicModal, ChallengeService, $localstorage, $filter, $stateParams, $timeout, $ionicLoading, UserTourPlace, tour) {
+app.controller('PlaceCtrl', function($log, $scope, $ionicModal, ChallengeService, UserTourChallenge, $localstorage, $filter, $stateParams, $timeout, $ionicLoading, UserTourPlace, tour) {
   var found = $filter('filter')(tour.data.tour_places, { id: parseInt($stateParams.placeId) }, true);
   if (found.length) {
     $scope.tour_place = found[0];
@@ -102,10 +115,10 @@ app.controller('PlaceCtrl', function($log, $scope, $ionicModal, ChallengeService
     $scope.tour_place = 'Not found';
   }
 
-  $scope.placeIsVisited = function(place) {
+  $scope.placeIsVisited = function(tour_place_id) {
     if ($localstorage.get("selected_user_tour") && $localstorage.get("selected_user_tour") != null && $localstorage.get("selected_user_tour") != 'undefined' && $localstorage.get("selected_user_tour") !== undefined) {
       UserTourPlace.get({
-        id: 1,
+        id: tour_place_id, // Not relevant, but must be send vor a successful request
         token: $localstorage.get("seeSight_user_token"),
         user_tour_id: $localstorage.get("selected_user_tour"),
         place_id: $scope.place.id
@@ -193,11 +206,21 @@ app.controller('PlaceCtrl', function($log, $scope, $ionicModal, ChallengeService
   $scope.answerChallenge = function() {
     var correct_answer = $filter('filter')($scope.challenge.challenge_solutions, { truth: true }, true);
     if(correct_answer.length) {
-      $scope.correct_answer = (correct_answer[0].answer.toLowerCase() == $scope.challengeData.answer.toLowerCase());
+      $scope.correct_answer = $scope.challengeData.answer  && (correct_answer[0].answer.toLowerCase() == $scope.challengeData.answer.toLowerCase());
     }
     $scope.show_notification = true;
     // Simulate a login delay. Remove this and replace with your login
     // code if using a login system
+    UserTourChallenge.get({
+      id: 1, // Not relevant, but must be send vor a successful request
+      token: $localstorage.get("seeSight_user_token"),
+      challenge_id: $scope.challenge.id,
+      user_tour_id: $localstorage.get("selected_user_tour")
+    }, function(userTourChallenge) {
+      userTourChallenge.answer = $scope.challengeData.answer;
+      userTourChallenge.$save({token: $localstorage.get("seeSight_user_token")});
+    });
+
     $timeout(function() {
       $scope.show_notification = false;
       //$scope.closeChallenge();
@@ -205,13 +228,16 @@ app.controller('PlaceCtrl', function($log, $scope, $ionicModal, ChallengeService
   };
 });
 
-app.controller('TourFinishCtrl', function($scope, $localstorage, UserTour, UserTourChallenge, tour) {
+app.controller('TourFinishCtrl', function($scope, $filter, $localstorage, UserTour, UserTourChallenge, tour) {
   $scope.rating = 2;
   if ($localstorage.get("selected_user_tour") && $localstorage.get("selected_user_tour") != null && $localstorage.get("selected_user_tour") != 'undefined' && $localstorage.get("selected_user_tour") !== undefined) {
     UserTour.get({
       token: $localstorage.get("seeSight_user_token"),
       id: $localstorage.get("selected_user_tour")
     }, function(userTour) {
+      $scope.user_tour_challenges = userTour.user_tour_challenges;
+      $scope.unsolved_user_tour_challenges = $filter('filter')(userTour.user_tour_challenges, { state: 3 }, false);
+
       userTour.completed = true;
       userTour.$save({token: $localstorage.get("seeSight_user_token")});
     });

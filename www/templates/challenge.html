@@ -28,11 +28,15 @@
         <ion-radio ng-repeat="s in challenge.challenge_solutions" ng-model="challengeData.answer" ng-value="s.answer">{{s.answer}}</ion-radio>
       </ion-list>
       <div class="list">
-        <label class="item">
-          <button class="button button-block button-positive" type="submit">Ok, ich hab's!</button>
-          <button class="button button-block button-clear" type="button" ng-click="closeChallenge()">Lieber doch später</button>
+        <label class="item" style="padding-bottom: 0px; border-bottom: none;">
+          <button type="submit" class="button button-block button-positive">Ok, ich hab's!</button>
         </label>
       </div>
     </form>
+    <div class="list">
+      <label class="item" style="padding-top: 0px; border-top: none;">
+        <button type="button" class="button button-block button-clear" ng-click="closeChallenge()" style="margin-top: 0px;">Lieber doch später</button>
+      </label>
+    </div>
   </ion-content>
 </ion-modal-view>

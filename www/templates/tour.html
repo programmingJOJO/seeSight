@@ -8,11 +8,11 @@
       <input type="text" ng-model="center.lng" style="margin-left:200px;" />
     </leaflet>
     <div id="start-button-item" class="item">
-      <button class="button-round button button-default button-fab button-icon-only button-assertive button-fab-top"
+      <button class="ng-hide button-round button button-default button-fab button-icon-only button-assertive button-fab-top"
               ui-sref="app.tour_start({tourId: tour.id, placeId: tour.tour_places[0].id})" fab-top="" fab-center="" fab=""
               ng-click="newUserTour()"
-              ng-if="!userTourExists()">
-        <span class="button-inner">LOS!</span>
+              ng-show="user_tour.completed || !userTourHasPause()">
+        <span class="button-inner">{{!user_tour.completed ? 'LOS!' : 'NEU'}}</span>
         <ion-button-effect></ion-button-effect>
       </button>
       <p>{{tour.description}}</p>
@@ -22,8 +22,9 @@
       <div class="item item-divider">
         Zielorte
       </div>
-      <ion-item ng-repeat="tour_place in (correctTourPlaces = (tour.tour_places | orderBy:'id'))" ng-class="{'item-button-right': isPlaceVisited(correctTourPlaces[$index - 1]) && !isPlaceVisited(tour_place)}">
-        {{tour_place.id}}
+      <ion-item ng-repeat="tour_place in (correctTourPlaces = (tour.tour_places | orderBy:'id'))"
+                ng-class="{'item-button-right': isPlaceVisited(correctTourPlaces[$index - 1]) && !isPlaceVisited(tour_place)}">
+        {{$index + 1}}.
         {{tour_place.place.name}}
         <span ng-if="isPlaceVisited(tour_place)" class="item-note">
           bereits besucht

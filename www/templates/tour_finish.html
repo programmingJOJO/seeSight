@@ -19,9 +19,11 @@
         <span star-rating rating-value="rating" max="3" on-rating-selected="saveRatingToServer(rating)" style="font-size: 250%;"></span>
       </div>
     </div>
-    <div class="row">
-      <div class="col text-center">
-        <h4>Glückwunsch! {{}} von {{}} Rätseln gelöst!</h4>
+    <div class="row">&nbsp;</div>
+    <div class="row" ng-if="user_tour_challenges.length > 0">
+      <div class="col text-center positive-bg" style="color: #fff;">
+        <h4 style="color: #fff !important;">{{unsolved_user_tour_challenges.length > 0 ? 'Glückwunsch!' : 'Wie schade.'}} {{unsolved_user_tour_challenges.length}} von {{user_tour_challenges.length}} Rätseln gelöst.</h4>
+        <p>Du kannst jederzeit alle bisher noch ungelösten Rätsel in den Seiteneinstellunge im Hauptmenü aufrufen, und dich erneut daran versuchen.</p>
       </div>
     </div>
   </ion-content>

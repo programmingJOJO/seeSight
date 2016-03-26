@@ -35,12 +35,13 @@
         <a class="item item-icon-left item-icon-right" href="#">
           <i class="icon ion-android-alert"></i>
           Ungelöste Rätsel
-          <span style="margin-right:3px" class="badge badge-assertive">0</span>
+          <span style="margin-right:3px" class="badge badge-assertive">{{unsolved_user_tour_challenges.length}}</span>
           <i class="icon ion-ios-arrow-right"></i>
         </a>
         <ion-item>
           Weitere Informationen
-          <p>Schon x Touren absolviert</p>
+          <p>{{user_tours.length > 0 ? 'Schon' : ''}} {{user_tours.length}} Tour{{user_tours.length > 1 ? 'en' : ''}} begonnen.</p>
+          <p>Davon {{conmpleted_user_tours.length > 0 ? 'schon' : 'noch'}} {{conmpleted_user_tours.length}} Tour{{conmpleted_user_tours.length > 1 ? 'en' : ''}} absolviert.</p>
         </ion-item>
       </ion-list>
     </ion-content>

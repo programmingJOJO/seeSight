@@ -24,14 +24,14 @@
   <div class="bar bar-subfooter auto-height" ng-if="(tour_place.id + 1) <= tour.tour_places.length">
       <button class="button button-positive button-full button-large"
               ui-sref="app.tour_start({tourId: tour.id, placeId: nextPlaceId})"
-              ng-click="placeIsVisited(place)">
+              ng-click="placeIsVisited(tour_place.id)">
         Weiter
       </button>
   </div>
   <div class="bar bar-subfooter auto-height" ng-if="(tour_place.id + 1) > tour.tour_places.length">
     <button class="button button-positive button-full button-large"
             ui-sref="app.tour_finish({tourId: tour.id})"
-            ng-click="placeIsVisited(place)">
+            ng-click="placeIsVisited(tour_place.id)">
       Tour beenden
     </button>
   </div>
