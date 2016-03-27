@@ -1,6 +1,6 @@
 <ion-modal-view>
   <ion-header-bar>
-    <h1 class="title">Rätsel</h1>
+    <h1 class="title">Entdeckung</h1>
     <div class="buttons">
       <button class="button button-clear" ng-click="closeChallenge()"><i class="icon ion-ios-close-empty"></i></button>
     </div>
@@ -10,12 +10,19 @@
       <p>Schwierigkeitsgrad
         <span star-rating rating-value="rating" max="3" readonly="true"></span>
       </p>
-    </div>
-    <div class="item">
       <p>{{challenge.question}}</p>
     </div>
+    <ion-item ng-repeat="hint in challenge.hints" class="item item-text-wrap animate-show ng-hide" ng-show="show_hint">
+      <div ng-class="isItemShown(hint) ? 'item-expand active' : 'item-expand inactive'">
+        <p>{{ hint.description }}</p>
+      </div>
+      <div ng-click="toggleItem(hint)" class="item-expand-footer">
+        <i ng-class="isItemShown(hint) ? 'ion-ios-minus-outline' : 'ion-ios-plus-outline'"></i>
+        Hinweis {{ isItemShown(hint) ? 'minimieren' : 'zeigen' }}
+      </div>
+    </ion-item>
     <div class="item animate-show" ng-class="correct_answer ? 'item-balanced' : 'item-assertive'" ng-show="show_notification">
-      {{correct_answer ? 'Gratulation! Das war korrekt!' : 'Versuch es noch einmal!'}}
+      {{correct_answer ? 'Gratulation! Das war korrekt!' : 'Versuch es noch einmal oder nimm einen Hinweis.'}}
     </div>
     <form ng-submit="answerChallenge()">
       <div class="list list-inset" ng-if="challenge.challenge_solutions.length == 1">
@@ -24,7 +31,7 @@
         </label>
       </div>
       <ion-list ion-radio ng-if="challenge.challenge_solutions.length > 1">
-        <ion-list-header>Möglichkeiten</ion-list-header>
+        <ion-list-header>Antwortmöglichkeiten</ion-list-header>
         <ion-radio ng-repeat="s in challenge.challenge_solutions" ng-model="challengeData.answer" ng-value="s.answer">{{s.answer}}</ion-radio>
       </ion-list>
       <div class="list">
@@ -34,7 +41,7 @@
       </div>
     </form>
     <div class="list">
-      <label class="item" style="padding-top: 0px; border-top: none;">
+      <label class="item" style="padding-top: 0; border-top: none;">
         <button type="button" class="button button-block button-clear" ng-click="closeChallenge()" style="margin-top: 0px;">Lieber doch später</button>
       </label>
     </div>

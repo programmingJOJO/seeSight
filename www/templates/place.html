@@ -1,22 +1,26 @@
 <ion-view view-title="{{place.name}}">
   <ion-content>
     <leaflet center="center" defaults="defaults" height="150px" markers="markers"></leaflet>
-    <div class="item animate-show ng-hide" ng-show="challengeExists()">
+    <div class="item animate-show ng-hide" ng-show="challengeUnsolved()">
       <div class="row">
         <div class="col">
-          <p>Hier gibt es etwas zu entdecken!<br>Für mehr Infos, klicke auf den Button gleich hier rechts.</p>
+          <p>Hier gibt es etwas zu entdecken!
+            <br>Für mehr Infos, klicke auf den Button gleich hier rechts.
+          </p>
         </div>
         <div class="col col-25">
           <button class="shake button-round button button-default button-icon-only button-assertive"
                   ng-click="showChallenge()">
-        <span class="button-inner">OK
-          <!--<i class="icon ion-ios-search-strong"></i>-->
-        </span>
+            <span class="button-inner">OK</span>
             <ion-button-effect></ion-button-effect>
           </button>
         </div>
       </div>
     </div>
+    <ion-item class="item item-icon-left ng-hide" ng-show="challengeSolved()">
+      <p>Ausflugsziel vollständing erkundet.</p>
+      <i class="icon ion-checkmark-circled"></i>
+    </ion-item>
     <div class="item">
       <p>{{place.description}}</p>
     </div>

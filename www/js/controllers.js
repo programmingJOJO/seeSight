@@ -162,6 +162,7 @@ app.controller('PlaceCtrl', function($log, $scope, $ionicModal, ChallengeService
 
   $scope.correct_answer = false;
   $scope.show_notification = false;
+  $scope.show_hint = false;
   $scope.rating = 1;
   $scope.$on('$ionicView.enter', function(){
     var promise = ChallengeService.challenges($scope.place.id);
@@ -170,6 +171,14 @@ app.controller('PlaceCtrl', function($log, $scope, $ionicModal, ChallengeService
           $scope.challenge = payload.data[0];
           if($scope.challenge) {
             $scope.rating = $scope.challenge.difficulty;
+            UserTourChallenge.get({
+              id: 1, // Not relevant, but must be send vor a successful request
+              token: $localstorage.get("seeSight_user_token"),
+              challenge_id: $scope.challenge.id,
+              user_tour_id: $localstorage.get("selected_user_tour")
+            }, function(userTourChallenge) {
+              $scope.user_tour_challenge = userTourChallenge;
+            });
           }
         },
         function(errorPayload) {
@@ -179,6 +188,14 @@ app.controller('PlaceCtrl', function($log, $scope, $ionicModal, ChallengeService
 
   $scope.challengeExists = function() {
     return ($scope.challenge && $scope.challenge.id);
+  };
+
+  $scope.challengeUnsolved = function() {
+    return ($scope.challengeExists() && $scope.user_tour_challenge && $scope.user_tour_challenge.state != 3);
+  };
+
+  $scope.challengeSolved = function() {
+    return ($scope.challengeExists() && $scope.user_tour_challenge && $scope.user_tour_challenge.state == 3);
   };
 
   // Form data for the login modal
@@ -193,13 +210,24 @@ app.controller('PlaceCtrl', function($log, $scope, $ionicModal, ChallengeService
 
   // Triggered in the login modal to close it
   $scope.closeChallenge = function() {
-    //$scope.correct_answer = '';
+    $scope.correct_answer = '';
     $scope.modal.hide();
   };
 
   // Open the login modal
   $scope.showChallenge = function() {
     $scope.modal.show();
+  };
+
+  $scope.toggleItem= function(item) {
+    if ($scope.isItemShown(item)) {
+      $scope.shownItem = null;
+    } else {
+      $scope.shownItem = item;
+    }
+  };
+  $scope.isItemShown = function(item) {
+    return $scope.shownItem === item;
   };
 
   // Perform the login action when the user submits the login form
@@ -209,8 +237,10 @@ app.controller('PlaceCtrl', function($log, $scope, $ionicModal, ChallengeService
       $scope.correct_answer = $scope.challengeData.answer  && (correct_answer[0].answer.toLowerCase() == $scope.challengeData.answer.toLowerCase());
     }
     $scope.show_notification = true;
-    // Simulate a login delay. Remove this and replace with your login
-    // code if using a login system
+    if (!$scope.correct_answer) {
+      $scope.show_hint = true;
+    }
+
     UserTourChallenge.get({
       id: 1, // Not relevant, but must be send vor a successful request
       token: $localstorage.get("seeSight_user_token"),
@@ -218,12 +248,16 @@ app.controller('PlaceCtrl', function($log, $scope, $ionicModal, ChallengeService
       user_tour_id: $localstorage.get("selected_user_tour")
     }, function(userTourChallenge) {
       userTourChallenge.answer = $scope.challengeData.answer;
-      userTourChallenge.$save({token: $localstorage.get("seeSight_user_token")});
+      userTourChallenge.$save({token: $localstorage.get("seeSight_user_token")}, function(userTourChallenge) {
+        $scope.user_tour_challenge = userTourChallenge;
+      });
     });
 
     $timeout(function() {
       $scope.show_notification = false;
-      //$scope.closeChallenge();
+      if ($scope.correct_answer) {
+        $scope.closeChallenge();
+      }
     }, 3000);
   };
 });

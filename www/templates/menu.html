@@ -40,8 +40,8 @@
         </a>
         <ion-item>
           Weitere Informationen
-          <p>{{user_tours.length > 0 ? 'Schon' : ''}} {{user_tours.length}} Tour{{user_tours.length > 1 ? 'en' : ''}} begonnen.</p>
-          <p>Davon {{conmpleted_user_tours.length > 0 ? 'schon' : 'noch'}} {{conmpleted_user_tours.length}} Tour{{conmpleted_user_tours.length > 1 ? 'en' : ''}} absolviert.</p>
+          <p>{{user_tours.length > 0 ? 'Schon' : ''}} {{user_tours.length}} Tour{{user_tours.length == 1 ? '' : 'en'}} begonnen.</p>
+          <p>Davon {{conmpleted_user_tours.length > 0 ? 'schon' : 'noch'}} {{conmpleted_user_tours.length}} Tour{{conmpleted_user_tours.length == 1 ? '' : 'en'}} absolviert.</p>
         </ion-item>
       </ion-list>
     </ion-content>

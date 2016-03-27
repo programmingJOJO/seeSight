@@ -15,19 +15,19 @@
         <span class="button-inner">{{!user_tour.completed ? 'LOS!' : 'NEU'}}</span>
         <ion-button-effect></ion-button-effect>
       </button>
+      <p>&nbsp;<span class="badge badge-label" ng-repeat="tag in tour.tags" data-add-a-space-between>{{tag.name}}</span> </p>
       <p>{{tour.description}}</p>
-      <p><span class="balanced-bg" ng-repeat="tag in tour.tags">{{tag.name}} </span> </p>
     </div>
     <ion-list>
       <div class="item item-divider">
-        Zielorte
+        Ausflugsziele
       </div>
       <ion-item ng-repeat="tour_place in (correctTourPlaces = (tour.tour_places | orderBy:'id'))"
                 ng-class="{'item-button-right': isPlaceVisited(correctTourPlaces[$index - 1]) && !isPlaceVisited(tour_place)}">
         {{$index + 1}}.
         {{tour_place.place.name}}
         <span ng-if="isPlaceVisited(tour_place)" class="item-note">
-          bereits besucht
+          besichtigt
         </span>
         <button class="button button-assertive"
                 ng-if="isPlaceVisited(correctTourPlaces[$index - 1]) && !isPlaceVisited(tour_place)"

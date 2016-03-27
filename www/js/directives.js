@@ -44,4 +44,14 @@ angular.module('starter.directives', [])
         });
       }
     }
-  });
+  })
+
+  .directive('addASpaceBetween', [function () {
+    'use strict';
+    return function (scope, element) {
+      //if(!scope.$last){
+        element.after('&#32;');
+      //}
+    }
+  }
+  ]);

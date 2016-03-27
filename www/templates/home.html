@@ -1,6 +1,10 @@
 <ion-view view-title="SeeSight">
   <ion-content>
     <ion-list>
+      <ion-item class="item item-icon-left">
+        <p>{{conmpleted_user_tours.length > 0 ? 'Vielen Dank, dass du diese Test-App ausgetestet hast. :)' : 'Hallo! Schön dass du an dieser Masterarbeit teilnimmst. Mehr Infos erhälst du in den Seitenmenü-Einstellung unter "Info". Viel Spaß.'}}</p>
+        <i class="icon ion-ios-information"></i>
+      </ion-item>
       <ion-item class="item item-icon-right" ng-click="newUser()">
         Schnellstart
         <p>Ich möchte sofort loslegen.</p>
