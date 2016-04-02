@@ -1,0 +1,104 @@
+<ion-nav-bar class="bar-positive" style="display: block;">
+  <ion-nav-buttons side="left">
+    <button class="button button-clear no-animation"
+            ng-click="startApp()" ng-show="!slideIndex">
+      Überspringen
+    </button>
+    <button class="button button-clear no-animation"
+            ng-click="previous()" ng-show="slideIndex > 0">
+      Zurück
+    </button>
+  </ion-nav-buttons>
+  <ion-nav-buttons side="right">
+    <button class="button button-clear no-animation"
+            ng-click="next()" ng-show="slideIndex != 2">
+      Weiter
+    </button>
+    <button class="button button-clear no-animation"
+            ng-click="startApp()" ng-show="slideIndex == 2">
+      Starte App
+    </button>
+  </ion-nav-buttons>
+</ion-nav-bar>
+
+<ion-nav-view>
+  <ion-view>
+    <ion-slide-box on-slide-changed="slideChanged(index)">
+      <ion-slide>
+        <div class="row row-bottom">
+          <div class="col text-center">
+            <h3 ng-show="!isOnline">Leider bist du offline.</h3>
+            <h3 ng-show="isOnline">Online.</h3>
+            <p>{{network}}</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col text-center">
+            <h3>Hallo! Schön, dass du an dieser Abschlussarbeit teilnehmen möchtest.</h3>
+            <p>
+              Dieser Prototyp möchte innerstädtische Ausflüge für Kurzurlauber, Entdecker und/oder Spontanreisende interessanter und motivierender gestalten.
+              Als Testumgebung wurde Nürnberg mit ein paar Touren und vielen sehenswerten Plätzen bestimmt. Probiere es doch gleich einmal aus.</p>
+            </p>
+          </div>
+        </div>
+        <div class="row row-bottom">
+          <div class="col text-center">
+            <small>
+              Zu Evaluationszwecken wird dein Verhalten während der Benutzung mitverfolgt.
+              Deine Daten sind anonymisiert und werden ausschließlich im Rahmen der Abschlussarbeit ausgewertet.
+            </small>
+            <small>
+              Für eine korrekte Nutzung ist eine permanente <strong>Internetverbindung notwendig</strong>.
+              Ohne eine Verbindung lassen sich die Touren nicht laden und es können zudem keine Daten für die Evaluation erhoben werden.
+            </small>
+          </div>
+        </div>
+      </ion-slide>
+      <ion-slide>
+        <div class="row">
+          <div class="col text-center">
+            <h3>Empfohlene Vorgehensweise</h3>
+            <div id="list">
+              <ol>
+                <li>Suche dir eine Tour aus oder wähle den Schnellstart</li>
+                <li>Beginne deine Tour und mache interessante Entdeckungen dabei.</li>
+                <li>Beantworte nach der Tour ein paar kurze Evaluationsfragen.</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col text-center">
+            <div class="logo" ng-click="next()">
+              <i class="ion ion-forward"></i>
+            </div>
+            <p>Auf der nächsten Seite geht es auch schon los!</p>
+          </div>
+        </div>
+      </ion-slide>
+      <ion-slide>
+        <div class="row">
+          <div class="col text-center">
+            <h3>Was interessiert dich an Ausflügen und Touren am meisten?</h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col text-center">
+            <div ng-repeat="tag in tags" class="badge badge-label" ng-click="collectTags(tag.id); tag.selected = !tag.selected;" ng-class="tag.selected ? 'selected' : ''">
+              {{tag.name}}
+              <i class="ion" ng-class="tag.selected ? 'ion-checkmark-circled' : 'ion-plus-circled'"></i>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col text-center">
+            <div class="logo" ng-click="startApp()">
+              <i class="ion ion-forward"></i>
+            </div>
+            <p>Auf der nächsten Seite geht es auch schon los!</p>
+          </div>
+        </div>
+      </ion-slide>
+    </ion-slide-box>
+  </ion-view>
+</ion-nav-view>

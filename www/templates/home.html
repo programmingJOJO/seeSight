@@ -2,10 +2,12 @@
   <ion-content>
     <ion-list>
       <ion-item class="item item-icon-left">
-        <p>{{conmpleted_user_tours.length > 0 ? 'Vielen Dank, dass du diese Test-App ausgetestet hast. :)' : 'Hallo! Schön dass du an dieser Masterarbeit teilnimmst. Mehr Infos erhälst du in den Seitenmenü-Einstellung unter "Info". Viel Spaß.'}}</p>
+        <p>{{completed_user_tours.length > 0 ? 'Klasse, dass du als Probant an der Abschlussarbeit teilgenommen hast.' : 'Hallo! Danke für die Teilnahme. Und nun viel Spaß.'}}</p>
         <i class="icon ion-ios-information"></i>
       </ion-item>
-      <ion-item class="item item-icon-right" ng-click="newUser()">
+      <ion-item class="item item-icon-right"
+                ng-click="selectUserTour(fast_start_user_tours[0].id)"
+                ui-sref="app.tour_detail({tourId: fast_start_user_tours[0].tour.id})">
         Schnellstart
         <p>Ich möchte sofort loslegen.</p>
         <p>Suche mir bitte automatisch eine Tour.</p>

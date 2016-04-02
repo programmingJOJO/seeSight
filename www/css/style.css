@@ -249,19 +249,24 @@ ion-list-header {
 /* Label */
 
 .badge-label {
-    background: lightgrey;
-    color: white;
     position: relative !important;
     top: 0 !important;
     right: 0 !important;
-    display: inline !important;
+    display: inline-block !important;
+    margin: 0 5px 5px 0;
+    background-color: #11c1f3;
+    color: white;
+}
+
+.badge-label.selected {
+    background-color: #077493;
 }
 
 /* CORE item expand/collapse */
 .item-expand {
     position: relative;
     width: 100%;
-    max-height: 17px;
+    max-height: 14px;
     transition: max-height 0.5s ease-out;
     overflow: hidden;
 }
@@ -298,4 +303,50 @@ ion-list-header {
 
 .item-expand-footer i {
     margin-right: 5px;
+}
+
+
+/* Intro */
+body {
+    cursor: url('http://ionicframework.com/img/finger.png'), auto;
+}
+.slider {
+    height: 100%;
+}
+.slider-slide {
+    padding-top: 80px;
+    color: #000;
+    background-color: #fff;
+    text-align: center;
+
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-weight: 300;
+}
+
+.logo {
+    margin: 30px 0;
+    font-size: 900%;
+}
+
+#list {
+    width: 250px;
+    margin: 30px auto;
+    font-size: 16px;
+}
+#list ol {
+    margin-top: 30px;
+}
+#list ol li {
+    text-align: left;
+    list-style: decimal;
+    margin: 10px 0;
+}
+
+/* Slider */
+.slider-slide {
+    background: #387ef5 !important;
+    color: white !important;
+}
+.slider-slide h1, .slider-slide h2, .slider-slide h3, .slider-slide h4, .slider-slide h5 {
+    color: white !important;
 }

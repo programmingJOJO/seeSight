@@ -6,6 +6,9 @@ var sass = require('gulp-sass');
 var minifyCss = require('gulp-minify-css');
 var rename = require('gulp-rename');
 var sh = require('shelljs');
+var replace = require('gulp-replace-task');
+var args    = require('yargs').argv;
+var fs      = require('fs');
 
 var paths = {
   sass: ['./scss/**/*.scss']
@@ -48,4 +51,20 @@ gulp.task('git-check', function(done) {
     process.exit(1);
   }
   done();
+});
+
+gulp.task('replace', function () {
+  // Get the environment from the command line
+  var env = args.env || 'development';
+
+  // Read the settings from the right file
+  var filename = env + '.json';
+  var settings = JSON.parse(fs.readFileSync('./config/' + filename, 'utf8'));
+  console.log('settings');
+  console.log(settings.apiUrl);
+  console.log('settings');
+// Replace each placeholder with the correct value for the variable.
+  gulp.src('./www/js/constants.js')
+      .pipe(replace('apiUrl', settings.apiUrl))
+      .pipe(gulp.dest('./www/js/constants.js'));
 });

@@ -1,20 +1,116 @@
 var app = angular.module('starter.controllers', []);
 
-app.controller('AppCtrl', function($scope, $localstorage, $filter, UserTour, UserTourChallenge) {
-  $scope.platform = ionic.Platform.platform();
+app.controller('IntroCtrl', function($scope, $rootScope, $state, $localstorage, $cordovaNetwork, $ionicSlideBoxDelegate, User, tags) {
+  document.addEventListener("deviceready", function() {
 
+    $scope.network = $cordovaNetwork.getNetwork();
+    $scope.isOnline = $cordovaNetwork.isOnline();
+    $scope.$apply();
+
+    // listen for Online event
+    $rootScope.$on('$cordovaNetwork:online', function(event, networkState){
+      $scope.isOnline = true;
+      $scope.network = $cordovaNetwork.getNetwork();
+
+      $scope.$apply();
+    });
+
+    // listen for Offline event
+    $rootScope.$on('$cordovaNetwork:offline', function(event, networkState){
+      console.log("got offline");
+      $scope.isOnline = false;
+      $scope.network = $cordovaNetwork.getNetwork();
+
+      $scope.$apply();
+    })
+
+  }, false);
+
+  $scope.$on('$ionicView.enter', function(e) {
+    if ($localstorage.get("seeSight_user_token") && $localstorage.get("seeSight_user_token") != null && $localstorage.get("seeSight_user_token") != 'undefined' && $localstorage.get("seeSight_user_token") !== undefined) {
+      User.get({token: $localstorage.get("seeSight_user_token")}, function (user) {
+        $localstorage.set("seeSight_user_token", user.token);
+      });
+    } else {
+      // Create guest
+      var user = new User({});
+      user.$save(function (user, putResponseHeaders) {
+        //user => saved user object
+        //putResponseHeaders => $http header getter
+        $localstorage.set("seeSight_user_token", user.token);
+      });
+    }
+    $scope.tags = tags;
+
+    // Called to navigate to the main app
+    $scope.startApp = function() {
+      // Set a flag that we finished the tutorial
+      $localstorage.set('seeSight_did_tutorial', true);
+      // Save tag ids
+      if ($localstorage.get("seeSight_user_token") && $localstorage.get("seeSight_user_token") != null && $localstorage.get("seeSight_user_token") != 'undefined' && $localstorage.get("seeSight_user_token") !== undefined) {
+        User.get({token: $localstorage.get("seeSight_user_token")}, function(user) {
+          user.tag_ids = $scope.tag_ids;
+          user.$save({token: $localstorage.get("seeSight_user_token")});
+        });
+        $state.go('app.home');
+      }
+    };
+
+    if($localstorage.get('seeSight_did_tutorial') === "true") {
+      $scope.startApp();
+    }
+
+    $scope.next = function() {
+      $ionicSlideBoxDelegate.next();
+    };
+    $scope.previous = function() {
+      $ionicSlideBoxDelegate.previous();
+    };
+
+    $scope.tag_ids = [];
+    $scope.collectTags = function(tag_id) {
+      var i = $scope.tag_ids.indexOf(tag_id);
+      if (i === -1) {
+        $scope.tag_ids.push(tag_id);
+      } else {
+        $scope.tag_ids.splice(i, 1)
+      }
+    };
+
+    // Called each time the slide changes
+    $scope.slideChanged = function(index) {
+      $scope.slideIndex = index;
+    };
+  });
+});
+
+app.controller('AppCtrl', function($scope, $state, $localstorage, $filter, $ionicPopup, UserTour, User, UserTourChallenge, tours) {
+  $scope.platform = ionic.Platform.platform();
+  $scope.tours = tours.data;
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
   // listen for the $ionicView.enter event:
   $scope.$on('$ionicView.enter', function(e) {
+    if ($localstorage.get("seeSight_user_token") && $localstorage.get("seeSight_user_token") != null && $localstorage.get("seeSight_user_token") != 'undefined' && $localstorage.get("seeSight_user_token") !== undefined) {
+      User.get({token: $localstorage.get("seeSight_user_token")}, function (user) {
+        $scope.tags = user.tags;
+      });
+    }
     UserTour.query({
       token: $localstorage.get("seeSight_user_token")
     }).$promise.then(function(response) {
       $scope.user_tours = response;
-      $scope.conmpleted_user_tours = $filter('filter')($scope.user_tours, { completed: true }, true);
+      $scope.completed_user_tours = $filter('filter')($scope.user_tours, { completed: true }, true);
+      if ($scope.tags.length > 0) {
+        if ($filter('filter')($scope.tags, { name: 'Brücken' }, true).length || $filter('filter')($scope.tags, { name: 'Flüsse' }, true).length) {
+          $scope.fast_start_user_tours = $filter('filter')($scope.user_tours, { tour: { tags: { name: 'Brücken' || 'Flüsse' } } }, true);
+        } else if ($filter('filter')($scope.tags, { name: 'Burgen' }, true).length || $filter('filter')($scope.tags, { name: 'Fachwerkhäuser' }, true).length) {
+          $scope.fast_start_user_tours = $filter('filter')($scope.user_tours, { tour: { tags: { name: 'Burgen' || 'Fachwerkhäuser' } } }, true);
+        }
+      }
+      $scope.fast_start_user_tours = $scope.fast_start_user_tours || $scope.user_tours;
     });
-
     UserTourChallenge.query({
       token: $localstorage.get("seeSight_user_token")
     }).$promise.then(function(response) {
@@ -23,6 +119,21 @@ app.controller('AppCtrl', function($scope, $localstorage, $filter, UserTour, Use
     });
   });
 
+  $scope.toIntro = function(){
+    $localstorage.set('seeSight_did_tutorial', false);
+    $state.go('intro');
+  };
+
+  $scope.showInfo = function() {
+    var alertPopup = $ionicPopup.alert({
+      title: 'Information',
+      template: 'Diese Anwendung enstand im Rahmen der Masterarbeit von Johannes Kölbl.<br>Studiengang: Informatik.<br>Hochschule: Technische Hochschule Nürnberg Georg Simon Ohm <br>E-Mail:<br> <a href="mailto:koelbljo45514@th-nuernberg.de">koelbljo45514@th-nuernberg.de</a>'
+    });
+  };
+
+  $scope.selectUserTour = function(user_tour_id) {
+    $localstorage.set("selected_user_tour", user_tour_id);
+  }
 });
 
 app.controller('ToursCtrl', function($log, $scope, $http, $localstorage, tours, UserTour) {
@@ -47,15 +158,15 @@ app.controller('TourCtrl', function($scope, $stateParams, $filter, $localstorage
       UserTour.get({
         token: $localstorage.get("seeSight_user_token"),
         id: $localstorage.get("selected_user_tour")
-      }).$promise.then(function(response) {
-        $scope.user_tour = response;
+      }, function(user_tour) {
+        $scope.user_tour = user_tour;
         $scope.user_tour_places = $scope.user_tour.user_tour_places;
       });
     }
   });
 
   $scope.userTourHasPause = function() {
-    return ($scope.user_tour && $scope.user_tour.user_tour_places[0].visited);
+    return ($scope.user_tour && $filter('filter')($scope.user_tour_places || [], { visited: true }, true).length);
   };
 
   $scope.isPlaceVisited = function(tour_place) {
@@ -95,22 +206,32 @@ app.controller('TourCtrl', function($scope, $stateParams, $filter, $localstorage
   });
 
   $scope.newUserTour = function() {
-    console.log('NEW USER TOUR');
     var userTour = new UserTour({tour_id: $scope.tour.id, token: $localstorage.get("seeSight_user_token") });
     userTour.$save(function (userTour, headers) {
-      console.log('USER TOUR SAVED');
       $localstorage.set("selected_user_tour", userTour.id);
     });
   };
 });
 
 app.controller('PlaceCtrl', function($log, $scope, $ionicModal, ChallengeService, UserTourChallenge, $localstorage, $filter, $stateParams, $timeout, $ionicLoading, UserTourPlace, tour) {
+  $scope.tour = tour.data;
+
+  $scope.objectIndexOf = function(arr, obj){
+    for(var i = 0; i < arr.length; i++){
+      if(angular.equals(arr[i], obj)){
+        return i;
+      }
+    }
+    return -1;
+  };
+
   var found = $filter('filter')(tour.data.tour_places, { id: parseInt($stateParams.placeId) }, true);
   if (found.length) {
     $scope.tour_place = found[0];
     $scope.place = $scope.tour_place.place;
-    $scope.tour = tour.data;
+    $scope.index_of_place = $scope.objectIndexOf(tour.data.tour_places, $scope.tour_place);
     $scope.nextPlaceId = $scope.tour_place.id + 1;
+    $scope.tour_range = ($scope.index_of_place + 1) / tour.data.tour_places.length * 100
   } else {
     $scope.tour_place = 'Not found';
   }
@@ -219,7 +340,7 @@ app.controller('PlaceCtrl', function($log, $scope, $ionicModal, ChallengeService
     $scope.modal.show();
   };
 
-  $scope.toggleItem= function(item) {
+  $scope.toggleItem = function(item) {
     if ($scope.isItemShown(item)) {
       $scope.shownItem = null;
     } else {

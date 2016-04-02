@@ -13,7 +13,8 @@ var app = angular.module('starter',
       'ngCordova',
       'starter.controllers',
       'starter.directives',
-      'leaflet-directive'
+      'leaflet-directive',
+      'starter.constants'
     ]);
 
 app.run(function($ionicPlatform, $ionicAnalytics, $rootScope, $ionicLoading, $localstorage, $cordovaDevice, User) {
@@ -39,52 +40,36 @@ app.run(function($ionicPlatform, $ionicAnalytics, $rootScope, $ionicLoading, $lo
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
-
-    if (ionic.Platform.isWebView()) {
-      // the window and scripts are fully loaded, and a cordova/phonegap
-      // object exists then let's listen for the deviceready
-      var device = $cordovaDevice.getDevice();
-      $rootScope.manufacturer = device.manufacturer;
-      $rootScope.model = device.model;
-      $rootScope.platform = device.platform;
-      $rootScope.uuid = device.uuid;
-    } else {
-      // the window and scripts are fully loaded, but the window object doesn't have the
-      // cordova/phonegap object, so its just a browser, not a webview wrapped w/ cordova
-      $rootScope.manufacturer = 'test';
-      $rootScope.model = 'test';
-      $rootScope.platform = 'browser';
-      $rootScope.uuid = $localstorage.get("uuid") || 16789;
-    }
-
-    // Create guest
-    if ($localstorage.get("seeSight_user_token")) {
-      var user = User.get({token: $localstorage.get("seeSight_user_token")}, function() {
-        $localstorage.set("seeSight_user_token", user.token );
-      });
-    } else {
-      var user = new User({});
-      user.$save(function(user, putResponseHeaders) {
-        //user => saved user object
-        //putResponseHeaders => $http header getter
-        $localstorage.set("seeSight_user_token", user.token );
-      });
-    }
   });
 });
 
 
 app.config(function($stateProvider, $urlRouterProvider) {
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/home');
+  $urlRouterProvider.otherwise('/');
 
   $stateProvider
+      .state('intro', {
+        url: '/',
+        templateUrl: 'templates/intro.html',
+        controller: 'IntroCtrl',
+        resolve: {
+          tags: function(Tag) {
+            return Tag.query()
+          }
+        }
+      })
 
     .state('app', {
       url: '/app',
       abstract: true,
       templateUrl: 'templates/menu.html',
-      controller: 'AppCtrl'
+      controller: 'AppCtrl',
+      resolve: {
+        tours: function(ToursService) {
+          return ToursService.tours()
+        }
+      }
     })
 
     .state('app.home', {
