@@ -39,9 +39,9 @@
         <div class="item item-divider">
           Mein Fortschritt
         </div>
-        <a class="item item-icon-right" href="#">
-          Ungelöste Rätsel
-          <span style="margin-right:3px" class="badge badge-assertive">{{unsolved_user_tour_challenges.length}}</span>
+        <a class="item item-icon-right" ng-click="showDismiss()">
+          Unvollständige Entdeckungen
+          <span style="margin-right:3px; top: 25px;" class="badge badge-assertive">{{unsolved_user_tour_challenges.length}}</span>
           <i class="icon ion-ios-arrow-right"></i>
         </a>
         <ion-item>

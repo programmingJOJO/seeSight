@@ -19,13 +19,13 @@ var app = angular.module('starter',
 
 app.run(function($ionicPlatform, $ionicAnalytics, $rootScope, $ionicLoading, $localstorage, $cordovaDevice, User) {
   $ionicPlatform.ready(function() {
-    $rootScope.$on('loading:show', function() {
+    /*$rootScope.$on('loading:show', function() {
       $ionicLoading.show({template: 'Lädt'})
     });
 
     $rootScope.$on('loading:hide', function() {
       $ionicLoading.hide()
-    });
+    });*/
 
     $ionicAnalytics.register();
 

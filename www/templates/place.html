@@ -1,7 +1,7 @@
 <ion-view view-title="{{place.name}}">
   <ion-content>
     <leaflet center="center" defaults="defaults" height="150px" markers="markers"></leaflet>
-    <div class="item animate-show ng-hide" ng-show="challengeUnsolved()">
+    <div class="item ng-hide" ng-show="challengeUnsolved()">
       <div class="row">
         <div class="col">
           <p>Hier gibt es etwas zu entdecken!
@@ -22,7 +22,7 @@
       <i class="icon ion-checkmark-circled"></i>
     </ion-item>
     <ion-item class="item">
-      <p>Besichtete Ausflugsziele: {{tour_range.toFixed(0)}}%</p>
+      <p>Besichtigte Ausflugsziele: {{tour_range.toFixed(0)}}%</p>
       <p>{{place.description}}</p>
     </ion-item>
     <button class="button button-positive button-full button-large"
@@ -37,7 +37,7 @@
             ng-click="placeIsVisited(tour_place.id)">
       Tour beenden
     </button>
-    <button class="button button-light button-full button-small" ui-sref="app.home">Tour pausieren</button>
+    <button class="button button-light button-full button-small" ng-click="goHome()">Tour pausieren</button>
   </ion-content>
 
   <!--<div class="bar bar-subfooter auto-height" ng-if="(tour_place.id + 1) <= tour.tour_places.length">

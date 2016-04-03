@@ -11,7 +11,7 @@
             ui-sref="app.tour_start({tourId: tour.id, placeId: tour.tour_places[0].id})"
             ng-click="newUserTour()" style="margin: 0;"
             ng-show="user_tour.completed || !userTourHasPause()">
-      <span class="button-inner">{{!user_tour.completed ? 'STARTEN' : 'NEU BEGINNEN'}}</span>
+      <span class="button-inner">{{!user_tour.completed ? 'TOUR STARTEN' : 'NEU BEGINNEN'}}</span>
       <ion-button-effect></ion-button-effect>
     </button>
     <div class="item">

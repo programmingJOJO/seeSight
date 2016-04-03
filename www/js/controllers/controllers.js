@@ -1,30 +1,6 @@
 var app = angular.module('starter.controllers', []);
 
-app.controller('IntroCtrl', function($scope, $rootScope, $state, $localstorage, $cordovaNetwork, $ionicSlideBoxDelegate, User, tags) {
-  document.addEventListener("deviceready", function() {
-
-    $scope.network = $cordovaNetwork.getNetwork();
-    $scope.isOnline = $cordovaNetwork.isOnline();
-    $scope.$apply();
-
-    // listen for Online event
-    $rootScope.$on('$cordovaNetwork:online', function(event, networkState){
-      $scope.isOnline = true;
-      $scope.network = $cordovaNetwork.getNetwork();
-
-      $scope.$apply();
-    });
-
-    // listen for Offline event
-    $rootScope.$on('$cordovaNetwork:offline', function(event, networkState){
-      console.log("got offline");
-      $scope.isOnline = false;
-      $scope.network = $cordovaNetwork.getNetwork();
-
-      $scope.$apply();
-    })
-
-  }, false);
+app.controller('IntroCtrl', function($scope, $rootScope, $state, $localstorage, $ionicSlideBoxDelegate, User, tags) {
 
   $scope.$on('$ionicView.enter', function(e) {
     if ($localstorage.get("seeSight_user_token") && $localstorage.get("seeSight_user_token") != null && $localstorage.get("seeSight_user_token") != 'undefined' && $localstorage.get("seeSight_user_token") !== undefined) {
@@ -84,9 +60,27 @@ app.controller('IntroCtrl', function($scope, $rootScope, $state, $localstorage, 
   });
 });
 
-app.controller('AppCtrl', function($scope, $state, $localstorage, $filter, $ionicPopup, UserTour, User, UserTourChallenge, tours) {
+app.controller('AppCtrl', function($scope, $state, $localstorage, $filter, $ionicPopup, $cordovaNetwork, UserTour, User, UserTourChallenge, tours) {
   $scope.platform = ionic.Platform.platform();
   $scope.tours = tours.data;
+  document.addEventListener("deviceready", function() {
+    $scope.isOnline = $cordovaNetwork.isOnline();
+    $scope.$apply();
+
+    // listen for Online event
+    $rootScope.$on('$cordovaNetwork:online', function(event, networkState) {
+      $scope.isOnline = true;
+      $scope.$apply();
+    });
+
+    // listen for Offline event
+    $rootScope.$on('$cordovaNetwork:offline', function(event, networkState) {
+      $scope.isOnline = false;
+      $scope.$apply();
+    })
+
+  }, false);
+
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -125,9 +119,16 @@ app.controller('AppCtrl', function($scope, $state, $localstorage, $filter, $ioni
   };
 
   $scope.showInfo = function() {
-    var alertPopup = $ionicPopup.alert({
+    $ionicPopup.alert({
       title: 'Information',
       template: 'Diese Anwendung enstand im Rahmen der Masterarbeit von Johannes Kölbl.<br>Studiengang: Informatik.<br>Hochschule: Technische Hochschule Nürnberg Georg Simon Ohm <br>E-Mail:<br> <a href="mailto:koelbljo45514@th-nuernberg.de">koelbljo45514@th-nuernberg.de</a>'
+    });
+  };
+
+  $scope.showDismiss = function() {
+    $ionicPopup.alert({
+      title: 'Information',
+      template: 'Diese Funktion ist zum jetzigen Zeitpunkt noch nicht verfügbar'
     });
   };
 
@@ -213,7 +214,7 @@ app.controller('TourCtrl', function($scope, $stateParams, $filter, $localstorage
   };
 });
 
-app.controller('PlaceCtrl', function($log, $scope, $ionicModal, ChallengeService, UserTourChallenge, $localstorage, $filter, $stateParams, $timeout, $ionicLoading, UserTourPlace, tour) {
+app.controller('PlaceCtrl', function($log, $scope, $ionicModal, $state, $ionicHistory, ChallengeService, UserTourChallenge, $localstorage, $filter, $stateParams, $timeout, $ionicLoading, UserTourPlace, tour) {
   $scope.tour = tour.data;
 
   $scope.objectIndexOf = function(arr, obj){
@@ -278,6 +279,13 @@ app.controller('PlaceCtrl', function($log, $scope, $ionicModal, ChallengeService
     }
   });
   $scope.markers.push(mainMarker);
+
+  $scope.goHome = function() {
+    $ionicHistory.nextViewOptions({
+      disableBack: true
+    });
+    $state.go('app.home');
+  };
 
   // Challenge
 
@@ -383,8 +391,8 @@ app.controller('PlaceCtrl', function($log, $scope, $ionicModal, ChallengeService
   };
 });
 
-app.controller('TourFinishCtrl', function($scope, $filter, $localstorage, UserTour, UserTourChallenge, tour) {
-  $scope.rating = 2;
+app.controller('TourFinishCtrl', function($scope, $filter, $localstorage, $state, $ionicHistory, UserTour) {
+  $scope.rating = 3;
   if ($localstorage.get("selected_user_tour") && $localstorage.get("selected_user_tour") != null && $localstorage.get("selected_user_tour") != 'undefined' && $localstorage.get("selected_user_tour") !== undefined) {
     UserTour.get({
       token: $localstorage.get("seeSight_user_token"),
@@ -397,6 +405,13 @@ app.controller('TourFinishCtrl', function($scope, $filter, $localstorage, UserTo
       userTour.$save({token: $localstorage.get("seeSight_user_token")});
     });
   }
+
+  $scope.goHome = function() {
+    $ionicHistory.nextViewOptions({
+      disableBack: true
+    });
+    $state.go('app.home');
+  };
 
   $scope.saveRatingToServer = function(rating) {
     if ($localstorage.get("selected_user_tour") && $localstorage.get("selected_user_tour") != null && $localstorage.get("selected_user_tour") != 'undefined' && $localstorage.get("selected_user_tour") !== undefined) {
