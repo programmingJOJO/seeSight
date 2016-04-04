@@ -1,7 +1,7 @@
 var app = angular.module('starter.controllers', []);
 
-app.controller('IntroCtrl', function($scope, $rootScope, $state, $localstorage, $ionicSlideBoxDelegate, User, tags) {
-
+app.controller('IntroCtrl', function($scope, $state, $localstorage, $ionicSlideBoxDelegate, User, tags) {
+  $scope.tags = tags;
   $scope.$on('$ionicView.enter', function(e) {
     if ($localstorage.get("seeSight_user_token") && $localstorage.get("seeSight_user_token") != null && $localstorage.get("seeSight_user_token") != 'undefined' && $localstorage.get("seeSight_user_token") !== undefined) {
       User.get({token: $localstorage.get("seeSight_user_token")}, function (user) {
@@ -16,72 +16,96 @@ app.controller('IntroCtrl', function($scope, $rootScope, $state, $localstorage, 
         $localstorage.set("seeSight_user_token", user.token);
       });
     }
-    $scope.tags = tags;
-    $scope.tag_ids = [];
-
-    // Called to navigate to the main app
-    $scope.startApp = function() {
-      // Set a flag that we finished the tutorial
-      $localstorage.set('seeSight_did_tutorial', true);
-      // Save tag ids
-      if ($localstorage.get("seeSight_user_token") && $localstorage.get("seeSight_user_token") != null && $localstorage.get("seeSight_user_token") != 'undefined' && $localstorage.get("seeSight_user_token") !== undefined) {
-        if ($scope.tag_ids.length > 0) {
-          User.get({token: $localstorage.get("seeSight_user_token")}, function (user) {
-            user.tag_ids = $scope.tag_ids;
-            user.$save({token: $localstorage.get("seeSight_user_token")});
-          });
-        }
-      }
-      $state.go('app.home');
-    };
 
     if($localstorage.get('seeSight_did_tutorial') === "true") {
       $scope.startApp();
     }
-
-    $scope.next = function() {
-      $ionicSlideBoxDelegate.next();
-    };
-    $scope.previous = function() {
-      $ionicSlideBoxDelegate.previous();
-    };
-
-    $scope.collectTags = function(tag_id) {
-      var i = $scope.tag_ids.indexOf(tag_id);
-      if (i === -1) {
-        $scope.tag_ids.push(tag_id);
-      } else {
-        $scope.tag_ids.splice(i, 1)
-      }
-    };
-
-    // Called each time the slide changes
-    $scope.slideChanged = function(index) {
-      $scope.slideIndex = index;
-    };
   });
+
+  $scope.tag_ids = [];
+  // Called to navigate to the main app
+  $scope.startApp = function() {
+    // Set a flag that we finished the tutorial
+    $localstorage.set('seeSight_did_tutorial', true);
+    // Save tag ids
+    if ($localstorage.get("seeSight_user_token") && $localstorage.get("seeSight_user_token") != null && $localstorage.get("seeSight_user_token") != 'undefined' && $localstorage.get("seeSight_user_token") !== undefined) {
+      if ($scope.tag_ids.length > 0) {
+        User.get({token: $localstorage.get("seeSight_user_token")}, function (user) {
+          user.tag_ids = $scope.tag_ids;
+          user.$save({token: $localstorage.get("seeSight_user_token")});
+        });
+      }
+    }
+    $state.go('app.home');
+  };
+
+  $scope.next = function() {
+    $ionicSlideBoxDelegate.next();
+  };
+  $scope.previous = function() {
+    $ionicSlideBoxDelegate.previous();
+  };
+
+  $scope.collectTags = function(tag_id) {
+    var i = $scope.tag_ids.indexOf(tag_id);
+    if (i === -1) {
+      $scope.tag_ids.push(tag_id);
+    } else {
+      $scope.tag_ids.splice(i, 1)
+    }
+  };
+
+  // Called each time the slide changes
+  $scope.slideChanged = function(index) {
+    $scope.slideIndex = index;
+  };
 });
 
-app.controller('AppCtrl', function($scope, $state, $localstorage, $filter, $ionicPopup, $cordovaNetwork, UserTour, User, UserTourChallenge, tours) {
+app.controller('AppCtrl', function($scope, $rootScope, $state, $localstorage, $filter, $ionicPopup, $cordovaNetwork, UserTour, User, UserTourChallenge, tours) {
   $scope.platform = ionic.Platform.platform();
-  $scope.tours = tours.data;
-  document.addEventListener("deviceready", function() {
-    $scope.isOnline = $cordovaNetwork.isOnline();
-    $scope.$apply();
 
-    // listen for Online event
-    $rootScope.$on('$cordovaNetwork:online', function(event, networkState) {
-      $scope.isOnline = true;
-      $scope.$apply();
+  var deploy = new Ionic.Deploy();
+  // Update app code with new release from Ionic Deploy
+  $scope.doUpdate = function() {
+    deploy.update().then(function(res) {
+      console.log('Ionic Deploy: Update Success! ', res);
+    }, function(err) {
+      console.log('Ionic Deploy: Update error! ', err);
+    }, function(prog) {
+      console.log('Ionic Deploy: Progress... ', prog);
     });
+  };
 
-    // listen for Offline event
-    $rootScope.$on('$cordovaNetwork:offline', function(event, networkState) {
-      $scope.isOnline = false;
-      $scope.$apply();
-    })
+  // Check Ionic Deploy for new code
+  $scope.checkForUpdates = function() {
+    console.log('Ionic Deploy: Checking for updates');
+    deploy.check().then(function(hasUpdate) {
+      console.log('Ionic Deploy: Update available: ' + hasUpdate);
+      $scope.hasUpdate = hasUpdate;
+    }, function(err) {
+      console.error('Ionic Deploy: Unable to check for updates', err);
+    });
+  }
 
-  }, false);
+
+  //$scope.tours = tours.data;
+  //document.addEventListener("deviceready", function() {
+  //  $scope.isOnline = $cordovaNetwork.isOnline();
+  //  $scope.$apply();
+  //
+  //  // listen for Online event
+  //  $rootScope.$on('$cordovaNetwork:online', function(event, networkState) {
+  //    $scope.isOnline = true;
+  //    $scope.$apply();
+  //  });
+  //
+  //  // listen for Offline event
+  //  $rootScope.$on('$cordovaNetwork:offline', function(event, networkState) {
+  //    $scope.isOnline = false;
+  //    $scope.$apply();
+  //  })
+  //
+  //}, false);
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -307,6 +331,7 @@ app.controller('PlaceCtrl', function($log, $scope, $ionicModal, $state, $ionicHi
   $scope.show_hint = false;
   $scope.rating = 1;
   $scope.$on('$ionicView.enter', function(){
+
     var promise = ChallengeService.challenges($scope.place.id);
     promise.then(
         function(payload) {

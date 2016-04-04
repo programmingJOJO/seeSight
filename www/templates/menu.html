@@ -27,6 +27,12 @@
           Information
           <i class="icon ion-ios-information-outline"></i>
         </ion-item>
+        <ion-item ng-click="checkForUpdates()">
+          Prüfe auf Updates
+        </ion-item>
+        <ion-item class="button-pulse" ng-if="hasUpdate" ng-click="doUpdate()">
+          Download Update
+        </ion-item>
         <ion-item>
           Meine Vorlieben
           <p>
