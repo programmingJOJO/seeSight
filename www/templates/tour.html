@@ -3,7 +3,7 @@
     <h2 class="title">{{tour.name}}</h2>
   </div>
   <ion-content class="has-subheader">
-    <leaflet center="center" defaults="defaults" height="150px" markers="markers">
+    <leaflet data-tap-disabled="true" center="center" defaults="defaults" height="150px" markers="markers">
       <input type="text" ng-model="center.lat" style="margin-left:200px;" />
       <input type="text" ng-model="center.lng" style="margin-left:200px;" />
     </leaflet>

@@ -17,6 +17,7 @@ app.controller('IntroCtrl', function($scope, $rootScope, $state, $localstorage, 
       });
     }
     $scope.tags = tags;
+    $scope.tag_ids = [];
 
     // Called to navigate to the main app
     $scope.startApp = function() {
@@ -24,12 +25,14 @@ app.controller('IntroCtrl', function($scope, $rootScope, $state, $localstorage, 
       $localstorage.set('seeSight_did_tutorial', true);
       // Save tag ids
       if ($localstorage.get("seeSight_user_token") && $localstorage.get("seeSight_user_token") != null && $localstorage.get("seeSight_user_token") != 'undefined' && $localstorage.get("seeSight_user_token") !== undefined) {
-        User.get({token: $localstorage.get("seeSight_user_token")}, function(user) {
-          user.tag_ids = $scope.tag_ids;
-          user.$save({token: $localstorage.get("seeSight_user_token")});
-        });
-        $state.go('app.home');
+        if ($scope.tag_ids.length > 0) {
+          User.get({token: $localstorage.get("seeSight_user_token")}, function (user) {
+            user.tag_ids = $scope.tag_ids;
+            user.$save({token: $localstorage.get("seeSight_user_token")});
+          });
+        }
       }
+      $state.go('app.home');
     };
 
     if($localstorage.get('seeSight_did_tutorial') === "true") {
@@ -43,7 +46,6 @@ app.controller('IntroCtrl', function($scope, $rootScope, $state, $localstorage, 
       $ionicSlideBoxDelegate.previous();
     };
 
-    $scope.tag_ids = [];
     $scope.collectTags = function(tag_id) {
       var i = $scope.tag_ids.indexOf(tag_id);
       if (i === -1) {
@@ -186,25 +188,31 @@ app.controller('TourCtrl', function($scope, $stateParams, $filter, $localstorage
     }
   };
 
+  var mainMarker = {
+    lat: $scope.tour.city.lat,
+    lng: $scope.tour.city.lng,
+    focus: true,
+    message: $scope.tour.city.name,
+    draggable: false
+  };
   angular.extend($scope, {
     center: {
       lat: $scope.tour.city.lat,
       lng: $scope.tour.city.lng,
-      zoom: 12
+      zoom: 14
     },
+    markers: [],
     defaults: {
-      zoomControl: false
-    },
-    layers: {
-      baselayers: {
-        osm: {
-          name: 'OpenStreetMap',
-          url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          type: 'xyz'
-        }
+      zoomControl: false,
+      tileLayer: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      tileLayerOptions: {
+        opacity: 0.9,
+        detectRetina: true,
+        reuseTiles: true
       }
     }
   });
+  $scope.markers.push(mainMarker);
 
   $scope.newUserTour = function() {
     var userTour = new UserTour({tour_id: $scope.tour.id, token: $localstorage.get("seeSight_user_token") });
@@ -266,19 +274,24 @@ app.controller('PlaceCtrl', function($log, $scope, $ionicModal, $state, $ionicHi
     },
     markers: [],
     defaults: {
-      zoomControl: false
-    },
-    layers: {
-      baselayers: {
-        osm: {
-          name: 'OpenStreetMap',
-          url: 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-          type: 'xyz'
-        }
+      tileLayer: "http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      tileLayerOptions: {
+        opacity: 0.9,
+        detectRetina: true,
+        reuseTiles: true
       }
     }
   });
   $scope.markers.push(mainMarker);
+  for (var i = 0; i < tour.data.tour_places.length; i++) {
+    if (tour.data.tour_places[i].id == parseInt($stateParams.placeId)) { continue; }
+    $scope.markers.push({
+      lat: tour.data.tour_places[i].place.lat,
+      lng: tour.data.tour_places[i].place.lng,
+      focus: false,
+      message: $scope.place.name
+    })
+  }
 
   $scope.goHome = function() {
     $ionicHistory.nextViewOptions({
