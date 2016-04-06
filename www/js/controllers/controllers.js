@@ -1,7 +1,25 @@
 var app = angular.module('starter.controllers', []);
 
-app.controller('IntroCtrl', function($scope, $state, $localstorage, $ionicSlideBoxDelegate, User, tags) {
+app.controller('IntroCtrl', function($scope, $rootScope, $cordovaNetwork, $state, $localstorage, $ionicSlideBoxDelegate, User, tags) {
   $scope.tags = tags;
+
+  document.addEventListener("deviceready", function() {
+    $scope.isOnline = $cordovaNetwork.isOnline();
+    //$scope.$apply();
+
+    // listen for Online event
+    $rootScope.$on('$cordovaNetwork:online', function(event, networkState) {
+      $scope.isOnline = true;
+      //$scope.$apply();
+    });
+
+    // listen for Offline event
+    $rootScope.$on('$cordovaNetwork:offline', function(event, networkState) {
+      $scope.isOnline = false;
+      //$scope.$apply();
+    })
+  }, false);
+
   $scope.$on('$ionicView.enter', function(e) {
     if ($localstorage.get("seeSight_user_token") && $localstorage.get("seeSight_user_token") != null && $localstorage.get("seeSight_user_token") != 'undefined' && $localstorage.get("seeSight_user_token") !== undefined) {
       User.get({token: $localstorage.get("seeSight_user_token")}, function (user) {
@@ -63,6 +81,7 @@ app.controller('IntroCtrl', function($scope, $state, $localstorage, $ionicSlideB
 
 app.controller('AppCtrl', function($scope, $rootScope, $state, $localstorage, $filter, $ionicPopup, $cordovaNetwork, UserTour, User, UserTourChallenge, tours) {
   $scope.platform = ionic.Platform.platform();
+  $scope.tours = tours.data;
 
   var deploy = new Ionic.Deploy();
   // Update app code with new release from Ionic Deploy
@@ -85,27 +104,24 @@ app.controller('AppCtrl', function($scope, $rootScope, $state, $localstorage, $f
     }, function(err) {
       console.error('Ionic Deploy: Unable to check for updates', err);
     });
-  }
+  };
 
+  document.addEventListener("deviceready", function() {
+    $scope.isOnline = $cordovaNetwork.isOnline();
+    //$scope.$apply();
 
-  //$scope.tours = tours.data;
-  //document.addEventListener("deviceready", function() {
-  //  $scope.isOnline = $cordovaNetwork.isOnline();
-  //  $scope.$apply();
-  //
-  //  // listen for Online event
-  //  $rootScope.$on('$cordovaNetwork:online', function(event, networkState) {
-  //    $scope.isOnline = true;
-  //    $scope.$apply();
-  //  });
-  //
-  //  // listen for Offline event
-  //  $rootScope.$on('$cordovaNetwork:offline', function(event, networkState) {
-  //    $scope.isOnline = false;
-  //    $scope.$apply();
-  //  })
-  //
-  //}, false);
+    // listen for Online event
+    $rootScope.$on('$cordovaNetwork:online', function(event, networkState) {
+      $scope.isOnline = true;
+      //$scope.$apply();
+    });
+
+    // listen for Offline event
+    $rootScope.$on('$cordovaNetwork:offline', function(event, networkState) {
+      $scope.isOnline = false;
+      //$scope.$apply();
+    })
+  }, false);
 
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
@@ -122,7 +138,7 @@ app.controller('AppCtrl', function($scope, $rootScope, $state, $localstorage, $f
     }).$promise.then(function(response) {
       $scope.user_tours = response;
       $scope.completed_user_tours = $filter('filter')($scope.user_tours, { completed: true }, true);
-      if ($scope.tags.length > 0) {
+      if ($scope.tags && $scope.tags.length > 0) {
         if ($filter('filter')($scope.tags, { name: 'Brücken' }, true).length || $filter('filter')($scope.tags, { name: 'Flüsse' }, true).length) {
           $scope.fast_start_user_tours = $filter('filter')($scope.user_tours, { tour: { tags: { name: 'Brücken' || 'Flüsse' } } }, true);
         } else if ($filter('filter')($scope.tags, { name: 'Burgen' }, true).length || $filter('filter')($scope.tags, { name: 'Fachwerkhäuser' }, true).length) {
@@ -163,6 +179,93 @@ app.controller('AppCtrl', function($scope, $rootScope, $state, $localstorage, $f
   }
 });
 
+app.controller('SurveyCtrl', function($log, $scope, $localstorage, Survey) {
+  $scope.range = function(min, max) {
+    var input = [];
+    for (var i = min; i <= max; i++) {
+      input.push(i);
+    }
+    return input;
+  };
+
+  // Form data
+  $scope.data = {
+    gender: null,
+    age: null,
+    how_many: 2,
+    how_intentional: 2,
+    player_type_killer: false,
+    player_type_achiever: false,
+    player_type_explorer: false,
+    player_type_socializer: false,
+
+    game_type_conflict_1: false,
+    game_type_conflict_2: false,
+    game_type_competition_1: false,
+    game_type_competition_2: false,
+    game_type_self_expression_1: false,
+    game_type_self_expression_2: false,
+    game_type_cooperation_1: false,
+    game_type_cooperation_2: false,
+    game_type_coordination_1: false,
+    game_type_coordination_2: false,
+
+    gamification_tutorial: false,
+    gamification_prefs: false,
+    gamification_fast_start: '',
+    gamification_challenges_like: 2,
+    gamification_hints_like: 2,
+    gamification_give_feedback_like: 2,
+    gamification_given_feedback_like: 2,
+    gamification_rewards_like: 2,
+    gamification_progress_like: 2,
+    using_app: 2,
+    comment: ''
+  };
+
+  $scope.store_data = function(finished) {
+    $localstorage.setObject('seesight_evaluation_survey', $scope.data);
+
+    if (finished) {
+      var survey = new Survey($scope.data);
+      console.log(survey);
+      survey.$save({token: $localstorage.get("seeSight_user_token")}, function (survey, headers) {
+
+      });
+    }
+  };
+
+  $scope.playerTypes = [
+    { text: "Ich profiliere mich gerne in Wettkämpfen mit anderen Spielern.", name: 'player_type_killer'},
+    { text: "Ich versuche mich oft in Spielen zu perfektionieren oder alles zu erreichen.", name: 'player_type_achiever'},
+    { text: "Ich erkunde gerne noch unentdeckte Spielewelten oder -abschnitte.", name: 'player_type_explorer' },
+    { text: "Ich interagiere in Spielen am Liebsten mit meinen Freunden.", name: 'player_type_socializer' }
+  ];
+
+  $scope.gameTypes = [
+    { text: "Leichtathletik oder andere Wettkampfsportarten", name: 'game_type_competition_1' },
+    { text: "Brettspiele wie Schach oder Risiko, Strategiespiele", name: 'game_type_conflict_2' },
+    { text: "Einzeltraining im Sport, Bouldern", name: 'game_type_self_expression_1' },
+    { text: "Spiele, welche temporäre Zusammenarbeit anbieten oder erfordern (Bosskämpfe in MMORPGs)", name: 'game_type_coordination_2' },
+    { text: "Spiele mit Highscore, Autowettrennen", name: 'game_type_competition_2' },
+    { text: "Action-Adventures oder andere Single-Player Spiele", name: 'game_type_self_expression_2' },
+    { text: "Fitnesstraining mit Freunden, Runtastic mit Cheering", name: 'game_type_coordination_1' },
+    { text: "Kooperative Spiele wie Pandemie oder Scotland Yard", name: 'game_type_cooperation_2' },
+    { text: "Ballsportarten wie Fußball, Volleyball oder Tennis", name: 'game_type_conflict_1' },
+    { text: "Meisterschaften mit dem Team oder dem Clan", name: 'game_type_cooperation_1' }
+  ];
+
+  $scope.menuItems = [
+    { text: "Den Schnellstart", value: "menu_fast_select" },
+    { text: "Manuell ausgewählt", value: "menu_manuel_select" },
+    { text: "Beides ausgetestet", value: "menu_both_select" }
+  ];
+
+  $scope.$on('$ionicView.enter', function(){
+    $scope.data = $localstorage.getObject('seesight_evaluation_survey', $scope.data);
+  });
+});
+
 app.controller('ToursCtrl', function($log, $scope, $http, $localstorage, tours, UserTour) {
   $scope.tours = tours.data;
   $scope.$on('$ionicView.enter', function(){
@@ -170,6 +273,7 @@ app.controller('ToursCtrl', function($log, $scope, $http, $localstorage, tours, 
       token: $localstorage.get("seeSight_user_token")
     }).$promise.then(function(response) {
       $scope.user_tours = response;
+      console.log($scope.user_tours)
     });
   });
 
@@ -391,10 +495,25 @@ app.controller('PlaceCtrl', function($log, $scope, $ionicModal, $state, $ionicHi
       $scope.shownItem = null;
     } else {
       $scope.shownItem = item;
+      $scope.takeHint(item.id);
     }
   };
   $scope.isItemShown = function(item) {
     return $scope.shownItem === item;
+  };
+
+  $scope.takeHint = function(hint_id) {
+    UserTourChallenge.get({
+      id: 1, // Not relevant, but must be send vor a successful request
+      token: $localstorage.get("seeSight_user_token"),
+      challenge_id: $scope.challenge.id,
+      user_tour_id: $localstorage.get("selected_user_tour")
+    }, function(userTourChallenge) {
+      userTourChallenge.hint_id = hint_id;
+      userTourChallenge.$save({token: $localstorage.get("seeSight_user_token")}, function(userTourChallenge) {
+        $scope.user_tour_challenge = userTourChallenge;
+      });
+    });
   };
 
   // Perform the login action when the user submits the login form

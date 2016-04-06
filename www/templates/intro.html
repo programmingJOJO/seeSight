@@ -1,4 +1,4 @@
-<ion-nav-bar class="bar-positive" style="display: block;">
+<!--<ion-nav-bar class="bar-positive" style="display: block;">
   <ion-nav-buttons side="left">
     <button class="button button-clear no-animation"
             ng-click="startApp()" ng-show="!slideIndex">
@@ -19,7 +19,7 @@
       Starte App
     </button>
   </ion-nav-buttons>
-</ion-nav-bar>
+</ion-nav-bar>-->
 
 <ion-nav-view>
   <ion-view>
@@ -27,23 +27,36 @@
       <ion-slide>
         <div class="row">
           <div class="col text-center">
-            <h3>Hallo! Schön, dass du an dieser Abschlussarbeit teilnehmen möchtest.</h3>
+            <h3>Herzlich Willkommen!</h3>
             <p>
-              Dieser Prototyp möchte innerstädtische Ausflüge für Kurzurlauber, Entdecker und/oder Spontanreisende interessanter und motivierender gestalten.
-              Als Testumgebung wurde Nürnberg mit ein paar Touren und vielen sehenswerten Plätzen bestimmt. Probiere es doch gleich einmal aus.</p>
+              Lieber Testprobant, schön, dass du an diesem Testdurchlauf teilnimmst.
+              SeeSight möchte dir ein aufregenderes und intensiveres Ausflugserlebnis bieten.
+              Probiere es doch gleich einmal aus.
             </p>
           </div>
         </div>
-        <div class="row row-bottom">
+        <div class="row">
           <div class="col text-center">
             <small>
               Zu Evaluationszwecken wird dein Verhalten während der Benutzung mitverfolgt.
               Deine Daten sind anonymisiert und werden ausschließlich im Rahmen der Abschlussarbeit ausgewertet.
             </small>
+          </div>
+        </div>
+        <div class="row ng-hide" ng-show="!isOnline">
+          <div class="col text-center" style="margin-bottom: 30px;">
             <small>
-              Für eine korrekte Nutzung ist eine permanente <strong>Internetverbindung notwendig</strong>.
-              Ohne eine Verbindung lassen sich die Touren nicht laden und es können zudem keine Daten für die Evaluation erhoben werden.
+              <strong>
+                Du scheinst nicht mit dem Internet verbunden zu sein.
+                Für eine korrekte Nutzung ist eine allerdings Internetverbindung notwendig.
+              </strong>
             </small>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col text-center">
+            <button class="button button-block button-light" ng-click="next()">WEITER</button>
+            <button class="button button-block button-clear button-light" ng-click="startApp()">ÜBERSPRINGEN</button>
           </div>
         </div>
       </ion-slide>
@@ -53,19 +66,28 @@
             <h3>Empfohlene Vorgehensweise</h3>
             <div id="list">
               <ol>
-                <li>Suche dir eine Tour aus oder wähle den Schnellstart</li>
+                <li>Suche dir eine Tour aus oder wähle gleich den Schnellstart</li>
                 <li>Beginne deine Tour und mache interessante Entdeckungen dabei.</li>
-                <li>Beantworte nach der Tour ein paar kurze Evaluationsfragen.</li>
+                <li>Das war's auch schon.</li>
               </ol>
             </div>
           </div>
         </div>
         <div class="row">
           <div class="col text-center">
-            <div class="logo" ng-click="next()">
-              <i class="ion ion-forward"></i>
-            </div>
-            <p>Auf der nächsten Seite geht es auch schon los!</p>
+            <p>
+              Es wäre toll, wenn du nach der Tour kurz ein paar Evaluationsfragen beantwortest.
+              Der Fragebogen erscheint im Hauptmenü, nachdem du eine Tour abgeschlossen hast.
+            </p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col text-center">
+            <button class="button button-block button-light" ng-click="next()">WEITER</button>
+            <button class="button button-clear button-light no-animation"
+                    ng-click="previous()">
+              ZURÜCK
+            </button>
           </div>
         </div>
       </ion-slide>
@@ -76,7 +98,7 @@
           </div>
         </div>
         <div class="row">
-          <div class="col text-center">
+          <div class="col text-center" style="margin-bottom: 30px;">
             <div ng-repeat="tag in tags" class="badge badge-label" ng-click="collectTags(tag.id); tag.selected = !tag.selected;" ng-class="tag.selected ? 'selected' : ''">
               {{tag.name}}
               <i class="ion" ng-class="tag.selected ? 'ion-checkmark-circled' : 'ion-plus-circled'"></i>
@@ -85,10 +107,13 @@
         </div>
         <div class="row">
           <div class="col text-center">
-            <div class="logo" ng-click="startApp()">
-              <i class="ion ion-forward"></i>
-            </div>
-            <p>Auf der nächsten Seite geht es auch schon los!</p>
+            <button class="button button-block button-light" ng-click="startApp()">
+              LOS
+            </button>
+            <button class="button button-clear button-light no-animation"
+                    ng-click="previous()">
+              ZURÜCK
+            </button>
           </div>
         </div>
       </ion-slide>

@@ -33,6 +33,9 @@ app.factory('UserTourChallenge', [ 'Resource', 'apiUrl', function( $resource, ap
 app.factory('Tag', [ 'Resource', 'apiUrl', function( $resource, apiUrl ) {
   return $resource(apiUrl + '/tags/:id', { id: "@id" });
 }]);
+app.factory('Survey', [ 'Resource', 'apiUrl', function( $resource, apiUrl ) {
+  return $resource(apiUrl + '/surveys/:id', { id: "@id" });
+}]);
 
 
 

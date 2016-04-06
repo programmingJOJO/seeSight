@@ -81,17 +81,49 @@ app.config(function($stateProvider, $urlRouterProvider) {
       }
     })
 
+    .state('app.form', {
+      url: "/form",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/form.html",
+          controller: 'SurveyCtrl'
+        }
+      }
+    })
+    .state('app.form2', {
+      url: "/form2",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/form2.html",
+          controller: 'SurveyCtrl'
+        }
+      }
+    })
+    .state('app.form3', {
+      url: "/form3",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/form3.html",
+          controller: 'SurveyCtrl'
+        }
+      }
+    })
+    .state('app.form4', {
+      url: "/form4",
+      views: {
+        'menuContent': {
+          templateUrl: "templates/form4.html",
+          controller: 'SurveyCtrl'
+        }
+      }
+    })
+
     .state('app.tours', {
       url: '/tours',
       views: {
         'menuContent': {
           templateUrl: 'templates/tours.html',
-          controller: 'ToursCtrl',
-          resolve: {
-            tours: function(ToursService) {
-              return ToursService.tours()
-            }
-          }
+          controller: 'ToursCtrl'
         }
       }
     })

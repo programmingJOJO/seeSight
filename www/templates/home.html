@@ -3,11 +3,15 @@
     <ion-list>
       <ion-item class="item item-icon-left">
         <i class="icon ion-ios-information"></i>
-        <p>{{completed_user_tours.length > 0 ? 'Klasse, dass du als Probant an der Abschlussarbeit teilgenommen hast.' : 'Hallo! Danke für die Teilnahme. Und nun viel Spaß.'}}</p>
+        <p>{{completed_user_tours.length > 0 ? 'Klasse, dass du als Probant an der Abschlussarbeit teilgenommen hast. Fülle doch bitte gliech den Fragebogen aus.' : 'Hallo! Danke für die Teilnahme. Und nun viel Spaß.'}}</p>
       </ion-item>
       <ion-item class="item item-icon-left item-energized ng-hide" ng-show="!isOnline">
         <i class="icon ion-ios-bolt"></i>
         <p>Du scheinst nicht mit dem Internet verbunden zu sein. Für eine korrekte Nutzung ist eine Internetverbindung allerdings notwendig.</p>
+      </ion-item>
+      <ion-item class="item item-icon-right item-calm" ui-sref="app.form" ng-if="completed_user_tours.length > 0">
+        Fragebogen
+        <i class="icon ion-ios-arrow-right"></i>
       </ion-item>
       <ion-item class="item item-icon-right"
                 ng-click="selectUserTour(fast_start_user_tours[0].id)"

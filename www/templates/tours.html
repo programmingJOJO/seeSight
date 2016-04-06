@@ -13,7 +13,7 @@
                 ng-click="selectUserTour(user_tour.id)"
                 ui-sref="app.tour_detail({tourId: user_tour.tour.id})">
         {{user_tour.tour.name}}
-        <span ng-if="!user_tour.completed" class="item-note">
+        <span ng-if="user_tour.has_pause" class="item-note">
           pausiert
         </span>
         <span ng-if="user_tour.completed" class="item-note">
@@ -23,7 +23,7 @@
         <p>Ort: Nürnberg</p>
         <p>
           Bewertung:
-          <span star-rating rating-value="user_tour.rating" max="5" readonly="true"></span>
+          <span star-rating rating-value="user_tour.average_rating" max="5" readonly="true"></span>
         </p>
         <p><span class="badge badge-label" ng-repeat="tag in user_tour.tour.tags">{{tag.name}}</span> </p>
       </ion-item>

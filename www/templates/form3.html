@@ -1,0 +1,103 @@
+<ion-view view-title="Fragebogen" id="question-form">
+  <div class="bar bar-subheader">
+    <h2 class="title">Schritt 3 von 4</h2>
+  </div>
+  <ion-content class="has-subheader">
+    <div class="list">
+
+      <div class="item item-divider">
+        In der Anwendung befinden sich Spielmechanismen, welche den Prozess zur Auswahl einer Tour und den Ausflug insgesamt motivierender gestallten sollen.
+        Die nun folgenden Fragen beziehen sich auf diese Spielmechanismen.
+      </div>
+      <ion-toggle ng-model="data.gamification_tutorial">
+        Hast du das Tutorial ganz zu Beginn durchgelesen?
+      </ion-toggle>
+
+      <ion-toggle ng-model="data.gamification_prefs">
+        Hast du zu Beginn ausgewählt, was deine Vorlieben sind?
+      </ion-toggle>
+
+      <div class="item item-divider">
+        Wähltest du beim ersten Durchgang im Hauptmenü den Schnellstart oder manuell eine Tour?
+      </div>
+      <ion-radio ng-repeat="item in menuItems"
+                 ng-value="item.value"
+                 ng-model="data.gamification_fast_start">
+        {{ item.text }}
+      </ion-radio>
+
+      <label class="item item-input item-stacked-label">
+        <span class="input-label" style="width: 100%; max-width: none;">
+          Es konnten ortsbezogene Fragestellungen zu den Orten absolviert werden. Findest du diesen Mechanismus ...
+        </span>
+        <div class="range">
+          Unwichtig
+          <input type="range" name="volume" min="0" max="4" ng-model="data.gamification_challenges_like"/>
+          Motivierend
+        </div>
+      </label>
+
+      <label class="item item-input item-stacked-label">
+        <span class="input-label" style="width: 100%; max-width: none;">
+          Zu den Fragen wurden Hinweise bei nicht korrekter Beantwortung angeboten. Findest du diese Art der Hilfestellung ...
+        </span>
+        <div class="range">
+          Unwichtig
+          <input type="range" name="volume" min="0" max="4" ng-model="data.gamification_hints_like"/>
+          Motivierend
+        </div>
+      </label>
+
+      <label class="item item-input item-stacked-label">
+        <span class="input-label" style="width: 100%; max-width: none;">
+          Am Ende der Tour konntest du Feedback in Form einer 1 bis 5-Sterne-Bewertung abgeben. Findest du solches Feedback ...
+        </span>
+        <div class="range">
+          Unwichtig
+          <input type="range" name="volume" min="0" max="4" ng-model="data.gamification_give_feedback_like"/>
+          Motivierend
+        </div>
+      </label>
+
+      <label class="item item-input item-stacked-label">
+        <span class="input-label" style="width: 100%; max-width: none;">
+           Am Ende der Tour erhieltest du zusammenfassend Feedback zu deinen Entdeckungen während der Tour. Findest du solches Feedback ...
+        </span>
+        <div class="range">
+          Unwichtig
+          <input type="range" name="volume" min="0" max="4" ng-model="data.gamification_given_feedback_like"/>
+          Motivierend
+        </div>
+      </label>
+
+      <label class="item item-input item-stacked-label">
+        <span class="input-label" style="width: 100%; max-width: none;">
+          Es war geplant, dass deine Erfolge (erfolgreiche Antworten auf Fragestellungen, Abschließen der Touren) zusätzliche Funktionen freischalten sollten, wie z. B. die Erstellung eigener Touren. Findest du solche Anreize ...
+        </span>
+        <div class="range">
+          Unwichtig
+          <input type="range" name="volume" min="0" max="4" ng-model="data.gamification_rewards_like"/>
+          Motivierend
+        </div>
+      </label>
+
+      <label class="item item-input item-stacked-label">
+        <span class="input-label" style="width: 100%; max-width: none;">
+          Während des Ausflugs konnte man den aktuellen Stand der Tour an jedem Zielort ablesen, sowie bei Pausierung einer Tour innerhalb der Zielortliste. Findest du diese Art der Hilfestellung ...
+        </span>
+        <div class="range">
+          Unwichtig
+          <input type="range" name="volume" min="0" max="4" ng-model="data.gamification_progress_like"/>
+          Motivierend
+        </div>
+      </label>
+
+      <div class="padding">
+        <a class="button button-block button-positive" ui-sref="app.form4" ng-click="store_data(false)">Gleich geschafft</a>
+        <a class="button button-block button-light" ui-sref="app.form2" ng-click="store_data(false)">Zurück zu Schritt 2</a>
+      </div>
+
+    </div>
+  </ion-content>
+</ion-view>
+

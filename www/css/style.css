@@ -350,3 +350,11 @@ body {
 .slider-slide h1, .slider-slide h2, .slider-slide h3, .slider-slide h4, .slider-slide h5 {
     color: white !important;
 }
+
+/* Form fields on */
+#question-form label.item.item-input.item-stacked-label {
+    padding: 6px 16px 5px 16px;
+}
+#question-form label.item.item-input.item-stacked-label div.range {
+    padding: 2px 0;
+}
