@@ -11,7 +11,7 @@ angular.module('starter.directives', [])
       restrict: 'A',
       template: '<ul class="rating">' +
       '<li ng-repeat="star in stars" ng-class="star" ng-click="toggle($index)">' +
-      '\u2605' +
+      '<i class="ion-ios-star"></i>' +
       '</li>' +
       '</ul>',
       scope: {

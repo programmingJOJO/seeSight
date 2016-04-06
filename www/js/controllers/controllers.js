@@ -131,6 +131,8 @@ app.controller('AppCtrl', function($scope, $rootScope, $state, $localstorage, $f
     if ($localstorage.get("seeSight_user_token") && $localstorage.get("seeSight_user_token") != null && $localstorage.get("seeSight_user_token") != 'undefined' && $localstorage.get("seeSight_user_token") !== undefined) {
       User.get({token: $localstorage.get("seeSight_user_token")}, function (user) {
         $scope.tags = user.tags;
+        $scope.did_survey = user.did_survey;
+        console.log(user);
       });
     }
     UserTour.query({
@@ -179,7 +181,7 @@ app.controller('AppCtrl', function($scope, $rootScope, $state, $localstorage, $f
   }
 });
 
-app.controller('SurveyCtrl', function($log, $scope, $localstorage, Survey) {
+app.controller('SurveyCtrl', function($log, $scope, $localstorage, $state, Survey) {
   $scope.range = function(min, max) {
     var input = [];
     for (var i = min; i <= max; i++) {
@@ -230,7 +232,7 @@ app.controller('SurveyCtrl', function($log, $scope, $localstorage, Survey) {
       var survey = new Survey($scope.data);
       console.log(survey);
       survey.$save({token: $localstorage.get("seeSight_user_token")}, function (survey, headers) {
-
+        $state.go('app.home')
       });
     }
   };
@@ -245,14 +247,14 @@ app.controller('SurveyCtrl', function($log, $scope, $localstorage, Survey) {
   $scope.gameTypes = [
     { text: "Leichtathletik oder andere Wettkampfsportarten", name: 'game_type_competition_1' },
     { text: "Brettspiele wie Schach oder Risiko, Strategiespiele", name: 'game_type_conflict_2' },
-    { text: "Einzeltraining im Sport, Bouldern", name: 'game_type_self_expression_1' },
+    { text: "Einzeltraining im Sport, Laufen, Bouldern", name: 'game_type_self_expression_1' },
     { text: "Spiele, welche temporäre Zusammenarbeit anbieten oder erfordern (Bosskämpfe in MMORPGs)", name: 'game_type_coordination_2' },
     { text: "Spiele mit Highscore, Autowettrennen", name: 'game_type_competition_2' },
     { text: "Action-Adventures oder andere Single-Player Spiele", name: 'game_type_self_expression_2' },
     { text: "Fitnesstraining mit Freunden, Runtastic mit Cheering", name: 'game_type_coordination_1' },
     { text: "Kooperative Spiele wie Pandemie oder Scotland Yard", name: 'game_type_cooperation_2' },
     { text: "Ballsportarten wie Fußball, Volleyball oder Tennis", name: 'game_type_conflict_1' },
-    { text: "Meisterschaften mit dem Team oder dem Clan", name: 'game_type_cooperation_1' }
+    { text: "Meisterschaften mit dem Sportteam oder dem Clan (Games)", name: 'game_type_cooperation_1' }
   ];
 
   $scope.menuItems = [

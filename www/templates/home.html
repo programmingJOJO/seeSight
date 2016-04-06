@@ -3,7 +3,10 @@
     <ion-list>
       <ion-item class="item item-icon-left">
         <i class="icon ion-ios-information"></i>
-        <p>{{completed_user_tours.length > 0 ? 'Klasse, dass du als Probant an der Abschlussarbeit teilgenommen hast. Fülle doch bitte gliech den Fragebogen aus.' : 'Hallo! Danke für die Teilnahme. Und nun viel Spaß.'}}</p>
+        <p>
+          {{completed_user_tours.length > 0 ? 'Klasse, dass du als Probant an der Abschlussarbeit teilgenommen hast. ' : 'Hallo! Danke für die Teilnahme. Und nun viel Spaß.'}}
+          <span ng-if="completed_user_tours.length > 0">{{did_survey ? 'Vielen Dank für das Ausfüllen des Fragebogens!' : 'Fülle doch bitte gleich den Fragebogen aus.' }}</span>
+        </p>
       </ion-item>
       <ion-item class="item item-icon-left item-energized ng-hide" ng-show="!isOnline">
         <i class="icon ion-ios-bolt"></i>
