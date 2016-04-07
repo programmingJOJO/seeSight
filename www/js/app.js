@@ -6,8 +6,7 @@
 // 'starter.controllers' is found in controllers.js
 var app = angular.module('starter',
     [
-      'ionic',
-      'ionic.service.core',
+      'ionic','ionic.service.core',
       'ionic.service.analytics',
       'ngResource',
       'ngCordova',
@@ -17,15 +16,8 @@ var app = angular.module('starter',
       'starter.constants'
     ]);
 
-app.run(function($ionicPlatform, $ionicAnalytics, $rootScope, $ionicLoading, $localstorage, $cordovaDevice, User) {
+app.run(function($ionicPlatform, $ionicAnalytics) {
   $ionicPlatform.ready(function() {
-    /*$rootScope.$on('loading:show', function() {
-      $ionicLoading.show({template: 'Lädt'})
-    });
-
-    $rootScope.$on('loading:hide', function() {
-      $ionicLoading.hide()
-    });*/
 
     $ionicAnalytics.register();
 
@@ -176,18 +168,6 @@ app.config(function($stateProvider, $urlRouterProvider) {
 
 app.config(function($httpProvider) {
   $httpProvider.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
-  $httpProvider.defaults.useXDomain = true;
-  delete $httpProvider.defaults.headers.common['X-Requested-With'];
-  $httpProvider.interceptors.push(function($rootScope) {
-    return {
-      request: function(config) {
-        $rootScope.$broadcast('loading:show');
-        return config
-      },
-      response: function(response) {
-        $rootScope.$broadcast('loading:hide');
-        return response
-      }
-    }
-  })
+  //$httpProvider.defaults.useXDomain = true;
+  //delete $httpProvider.defaults.headers.common['X-Requested-With'];
 });

@@ -3409,7 +3409,7 @@ var IonicPlatform = (function () {
   }, {
     key: "Version",
     get: function get() {
-      return '0.5.1';
+      return '0.7.1';
     }
   }]);
 
@@ -3912,7 +3912,7 @@ var BaseSettings = (function () {
 })();
 
 var temp = new BaseSettings().factory('$ionicCoreSettings', function () {
-  "IONIC_SETTINGS_STRING_START";var settings = {"app_id":"c09fb2f8","api_key":"1e20a32ebe575440ec9c6a8a593c4415b4dffdc6a3442341","dev_push":true}; return { get: function(setting) { if (settings[setting]) { return settings[setting]; } return null; } };"IONIC_SETTINGS_STRING_END";
+  "IONIC_SETTINGS_STRING_START";var settings = {"app_id":"84a62476","api_key":"7d2c7df285ff43567438db801940dbb52a829640344248cf","dev_push":true}; return { get: function(setting) { if (settings[setting]) { return settings[setting]; } return null; } };"IONIC_SETTINGS_STRING_END";
 }).finish();
 
 var Settings = (function () {
@@ -4757,7 +4757,7 @@ var Deploy = (function () {
       var self = this;
       this.onReady(function () {
         if (self._getPlugin()) {
-          self._plugin.init(settings.get('app_id'), settings.getURL('deploy'));
+          self._plugin.init(settings.get('app_id'), settings.getURL('platform-api'));
         }
       });
     }
@@ -5202,21 +5202,8 @@ if (typeof angular === 'object' && angular.module) {
          * @return {void}
          */
         value: function notificationNavigation(notification) {
-          var state = false;
-          var stateParams = {};
-
-          try {
-            state = notification.additionalData.payload.$state;
-          } catch (e) {
-            state = false;
-          }
-
-          try {
-            stateParams = JSON.parse(notification.additionalData.payload.$stateParams);
-          } catch (e) {
-            stateParams = {};
-          }
-
+          var state = notification.payload.$state || false;
+          var stateParams = notification.payload.$stateParams || {};
           if (state) {
             $state.go(state, stateParams);
           }
@@ -5235,8 +5222,11 @@ if (typeof angular === 'object' && angular.module) {
   }]).run(['$ionicPush', '$ionicPushAction', function ($ionicPush, $ionicPushAction) {
     // This is what kicks off the state redirection when a push notificaiton has the relevant details
     $ionicPush._emitter.on('ionic_push:processNotification', function (notification) {
-      if (notification && notification.additionalData && notification.additionalData.foreground === false) {
-        $ionicPushAction.notificationNavigation(notification);
+      notification = Ionic.PushMessage.fromPluginJSON(notification);
+      if (notification && notification.app) {
+        if (notification.app.asleep === true || notification.app.closed === true) {
+          $ionicPushAction.notificationNavigation(notification);
+        }
       }
     });
   }]);
@@ -5249,14 +5239,17 @@ var _push = require("./push");
 
 var _pushToken = require("./push-token");
 
+var _pushMessage = require("./push-message");
+
 // Declare the window object
 window.Ionic = window.Ionic || {};
 
 // Ionic Namespace
 Ionic.Push = _push.Push;
 Ionic.PushToken = _pushToken.PushToken;
+Ionic.PushMessage = _pushMessage.PushMessage;
 
-},{"./push":33,"./push-token":32}],30:[function(require,module,exports){
+},{"./push":33,"./push-message":31,"./push-token":32}],30:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5696,6 +5689,7 @@ var Push = (function () {
     this._blockSaveToken = false;
     this._registered = false;
     this._emitter = new _coreEvents.EventEmitter();
+    this._plugin = null;
     if (config !== DEFER_INIT) {
       var self = this;
       _coreCore.IonicPlatform.getMain().onReady(function () {
@@ -5737,7 +5731,7 @@ var Push = (function () {
   }, {
     key: "init",
     value: function init(config) {
-      this.getPushPlugin();
+      this._getPushPlugin();
       if (typeof config === 'undefined') {
         config = {};
       }
@@ -5787,7 +5781,10 @@ var Push = (function () {
         token = token.token;
       }
 
-      var tokenData = { 'token': token };
+      var tokenData = {
+        'token': token,
+        'app_id': settings.get('app_id')
+      };
 
       if (!opts.ignore_user) {
         var user = _coreUser.User.current();
@@ -5844,7 +5841,7 @@ var Push = (function () {
           self._blockRegistration = false;
           self._tokenReady = true;
         } else {
-          self._plugin = PushNotification.init(self._config.pluginConfig);
+          self._plugin = self._getPushPlugin().init(self._config.pluginConfig);
           self._plugin.on('registration', function (data) {
             self._blockRegistration = false;
             self.token = new _pushToken.PushToken(data.registrationId);
@@ -6108,17 +6105,6 @@ var Push = (function () {
   }, {
     key: "_getPushPlugin",
     value: function _getPushPlugin() {
-      return this.getPushPlugin();
-    }
-
-    /**
-     * Fetch the phonegap-push-plugin interface
-     *
-     * @return {PushNotification} PushNotification instance
-     */
-  }, {
-    key: "getPushPlugin",
-    value: function getPushPlugin() {
       var self = this;
       var PushPlugin = false;
       try {
@@ -6131,6 +6117,17 @@ var Push = (function () {
         self.logger.error("PushNotification plugin is required. Have you run `ionic plugin add phonegap-plugin-push` ?");
       }
       return PushPlugin;
+    }
+
+    /**
+     * Fetch the phonegap-push-plugin interface
+     *
+     * @return {PushNotification} PushNotification instance
+     */
+  }, {
+    key: "getPushPlugin",
+    value: function getPushPlugin() {
+      return this._plugin;
     }
 
     /**

@@ -79,32 +79,9 @@ app.controller('IntroCtrl', function($scope, $rootScope, $cordovaNetwork, $state
   };
 });
 
-app.controller('AppCtrl', function($scope, $rootScope, $state, $localstorage, $filter, $ionicPopup, $cordovaNetwork, UserTour, User, UserTourChallenge, tours) {
+app.controller('AppCtrl', function($scope, $rootScope, $state, $localstorage, $ionicHistory, $ionicAnalytics, $filter, $ionicPopup, $cordovaNetwork, UserTour, User, UserTourChallenge, tours) {
   $scope.platform = ionic.Platform.platform();
   $scope.tours = tours.data;
-
-  var deploy = new Ionic.Deploy();
-  // Update app code with new release from Ionic Deploy
-  $scope.doUpdate = function() {
-    deploy.update().then(function(res) {
-      console.log('Ionic Deploy: Update Success! ', res);
-    }, function(err) {
-      console.log('Ionic Deploy: Update error! ', err);
-    }, function(prog) {
-      console.log('Ionic Deploy: Progress... ', prog);
-    });
-  };
-
-  // Check Ionic Deploy for new code
-  $scope.checkForUpdates = function() {
-    console.log('Ionic Deploy: Checking for updates');
-    deploy.check().then(function(hasUpdate) {
-      console.log('Ionic Deploy: Update available: ' + hasUpdate);
-      $scope.hasUpdate = hasUpdate;
-    }, function(err) {
-      console.error('Ionic Deploy: Unable to check for updates', err);
-    });
-  };
 
   document.addEventListener("deviceready", function() {
     $scope.isOnline = $cordovaNetwork.isOnline();
@@ -128,13 +105,18 @@ app.controller('AppCtrl', function($scope, $rootScope, $state, $localstorage, $f
   // To listen for when this page is active (for example, to refresh data),
   // listen for the $ionicView.enter event:
   $scope.$on('$ionicView.enter', function(e) {
+    $ionicAnalytics.track('View gewechselt', {
+        from: $ionicHistory.backTitle(),
+        to: $ionicHistory.currentTitle()
+    });
+
     if ($localstorage.get("seeSight_user_token") && $localstorage.get("seeSight_user_token") != null && $localstorage.get("seeSight_user_token") != 'undefined' && $localstorage.get("seeSight_user_token") !== undefined) {
       User.get({token: $localstorage.get("seeSight_user_token")}, function (user) {
         $scope.tags = user.tags;
         $scope.did_survey = user.did_survey;
-        console.log(user);
       });
     }
+
     UserTour.query({
       token: $localstorage.get("seeSight_user_token")
     }).$promise.then(function(response) {
@@ -230,7 +212,6 @@ app.controller('SurveyCtrl', function($log, $scope, $localstorage, $state, Surve
 
     if (finished) {
       var survey = new Survey($scope.data);
-      console.log(survey);
       survey.$save({token: $localstorage.get("seeSight_user_token")}, function (survey, headers) {
         $state.go('app.home')
       });
@@ -275,7 +256,6 @@ app.controller('ToursCtrl', function($log, $scope, $http, $localstorage, tours, 
       token: $localstorage.get("seeSight_user_token")
     }).$promise.then(function(response) {
       $scope.user_tours = response;
-      console.log($scope.user_tours)
     });
   });
 

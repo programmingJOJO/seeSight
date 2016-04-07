@@ -3,7 +3,7 @@
   "private": "true",
   "devDependencies": {
     "ionic": "driftyco/ionic-bower#1.2.4",
-    "ionic-platform-web-client": "^0.5.1"
+    "ionic-platform-web-client": "^0.7.1"
   },
   "dependencies": {
     "angular-leaflet-directive": "0.10.0"

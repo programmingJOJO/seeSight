@@ -10,7 +10,8 @@
         </div>
         <div class="col col-25">
           <button class="shake button-round button button-default button-icon-only button-assertive"
-                  ng-click="showChallenge()">
+                  ng-click="showChallenge()"
+                  ion-track-tap="Challenge aktiviert" ion-track-data="{ on_tour_progress: tour_range.toFixed(0) }">
             <span class="button-inner">LOS</span>
             <ion-button-effect></ion-button-effect>
           </button>
@@ -33,28 +34,15 @@
     </button>
     <button class="button button-positive button-full button-large"
             ng-if="tour_range >= 100"
+            ion-track-tap="Tour beendet" ion-track-data="{ tour: tour.name }"
             ui-sref="app.tour_finish({tourId: tour.id})"
             ng-click="placeIsVisited(tour_place.id)">
       Tour beenden
     </button>
-    <button class="button button-light button-full button-small" ng-click="goHome()">Tour pausieren</button>
+    <button class="button button-light button-full"
+            ion-track-tap="Tour pausiert" ion-track-data="{ on_tour_progress: tour_range.toFixed(0), tour: tour.name }"
+            ng-click="goHome()" style="padding-bottom: 40px;">
+      Tour pausieren
+    </button>
   </ion-content>
-
-  <!--<div class="bar bar-subfooter auto-height" ng-if="(tour_place.id + 1) <= tour.tour_places.length">
-      <button class="button button-positive button-full button-large"
-              ui-sref="app.tour_start({tourId: tour.id, placeId: nextPlaceId})"
-              ng-click="placeIsVisited(tour_place.id)">
-        Weiter
-      </button>
-  </div>
-  <div class="bar bar-subfooter auto-height" ng-if="(tour_place.id + 1) > tour.tour_places.length">
-    <button class="button button-positive button-full button-large"
-            ui-sref="app.tour_finish({tourId: tour.id})"
-            ng-click="placeIsVisited(tour_place.id)">
-      Tour beenden
-    </button>
-  </div>
-  <div class="bar bar-footer auto-height">
-      <button class="button button-light button-full button-small" ui-sref="app.home">Tour pausieren</button>
-  </div>-->
 </ion-view>

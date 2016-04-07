@@ -1,26 +1,3 @@
-<!--<ion-nav-bar class="bar-positive" style="display: block;">
-  <ion-nav-buttons side="left">
-    <button class="button button-clear no-animation"
-            ng-click="startApp()" ng-show="!slideIndex">
-      Überspringen
-    </button>
-    <button class="button button-clear no-animation"
-            ng-click="previous()" ng-show="slideIndex > 0">
-      Zurück
-    </button>
-  </ion-nav-buttons>
-  <ion-nav-buttons side="right">
-    <button class="button button-clear no-animation"
-            ng-click="next()" ng-show="slideIndex != 2">
-      Weiter
-    </button>
-    <button class="button button-clear no-animation"
-            ng-click="startApp()" ng-show="slideIndex == 2">
-      Starte App
-    </button>
-  </ion-nav-buttons>
-</ion-nav-bar>-->
-
 <ion-nav-view>
   <ion-view>
     <ion-slide-box on-slide-changed="slideChanged(index)">
@@ -48,15 +25,22 @@
             <small>
               <strong>
                 Du scheinst nicht mit dem Internet verbunden zu sein.
-                Für eine korrekte Nutzung ist eine allerdings Internetverbindung notwendig.
+                Für eine korrekte Nutzung ist allerdings eine Internetverbindung notwendig.
               </strong>
             </small>
           </div>
         </div>
         <div class="row">
           <div class="col text-center">
-            <button class="button button-block button-light" ng-click="next()">WEITER</button>
-            <button class="button button-block button-clear button-light" ng-click="startApp()">ÜBERSPRINGEN</button>
+            <button class="button button-block button-light"
+                    ng-click="next()">
+              WEITER
+            </button>
+            <button class="button button-block button-clear button-light"
+                    ion-track-tap="Tutorial gemacht" ion-track-data="{ type: 'start app by skip' }"
+                    ng-click="startApp()">
+              ÜBERSPRINGEN
+            </button>
           </div>
         </div>
       </ion-slide>
@@ -107,7 +91,9 @@
         </div>
         <div class="row">
           <div class="col text-center">
-            <button class="button button-block button-light" ng-click="startApp()">
+            <button class="button button-block button-light"
+                    ion-track-tap="Tutorial gemacht" ion-track-data="{ type: 'start app after tutorial' }"
+                    ng-click="startApp()">
               LOS
             </button>
             <button class="button button-clear button-light no-animation"
