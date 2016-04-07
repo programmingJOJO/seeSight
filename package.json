@@ -23,14 +23,10 @@
     "cordova-plugin-splashscreen",
     "cordova-plugin-statusbar",
     "ionic-plugin-keyboard",
-    "phonegap-plugin-push",
     "ionic-plugin-deploy"
   ],
   "cordovaPlatforms": [
     "ios",
-    {
-      "platform": "android",
-      "locator": "wp8"
-    }
+    "android"
   ]
 }

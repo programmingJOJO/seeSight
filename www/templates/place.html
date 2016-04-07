@@ -1,48 +1,56 @@
 <ion-view view-title="{{place.name}}">
   <ion-content>
     <leaflet data-tap-disabled="true" center="center" defaults="defaults" height="150px" markers="markers"></leaflet>
-    <div class="item ng-hide" ng-show="challengeUnsolved()">
-      <div class="row">
-        <div class="col">
-          <p>Hier gibt es etwas zu entdecken!
-            <br>Für mehr Infos, klicke auf den Button gleich hier rechts.
-          </p>
+    <ion-list>
+      <div class="item">
+        <div class="row" ng-hide="challengeSolved()">
+          <div class="col">
+            <p>Hier gibt es etwas zu entdecken!
+              <br>Für mehr Infos, klicke auf den Button gleich hier rechts.
+            </p>
+          </div>
+          <div class="col col-25">
+            <button class="shake button-round button button-default button-assertive"
+                    ng-click="showChallenge()"
+                    ion-track-tap="Challenge aktiviert" ion-track-data="{ on_tour_progress: tour_range.toFixed(0) }">
+              <span class="button-inner">LOS</span>
+              <ion-button-effect></ion-button-effect>
+            </button>
+          </div>
         </div>
-        <div class="col col-25">
-          <button class="shake button-round button button-default button-icon-only button-assertive"
-                  ng-click="showChallenge()"
-                  ion-track-tap="Challenge aktiviert" ion-track-data="{ on_tour_progress: tour_range.toFixed(0) }">
-            <span class="button-inner">LOS</span>
-            <ion-button-effect></ion-button-effect>
-          </button>
+        <div ng-show="challengeSolved()" class="item-icon-left">
+          <p>Ausflugsziel vollständing erkundet.</p>
+          <i class="icon ion-checkmark-circled"></i>
         </div>
       </div>
-    </div>
-    <ion-item class="item item-icon-left ng-hide" ng-show="challengeSolved()">
-      <p>Ausflugsziel vollständing erkundet.</p>
-      <i class="icon ion-checkmark-circled"></i>
-    </ion-item>
-    <ion-item class="item">
-      <p>Besichtigte Ausflugsziele: {{tour_range.toFixed(0)}}%</p>
-      <p>{{place.description}}</p>
-    </ion-item>
-    <button class="button button-positive button-full button-large"
-            ng-if="tour_range < 100"
-            ui-sref="app.tour_start({tourId: tour.id, placeId: nextPlaceId})"
-            ng-click="placeIsVisited(tour_place.id)">
-      Weiter
-    </button>
-    <button class="button button-positive button-full button-large"
-            ng-if="tour_range >= 100"
-            ion-track-tap="Tour beendet" ion-track-data="{ tour: tour.name }"
-            ui-sref="app.tour_finish({tourId: tour.id})"
-            ng-click="placeIsVisited(tour_place.id)">
-      Tour beenden
-    </button>
-    <button class="button button-light button-full"
-            ion-track-tap="Tour pausiert" ion-track-data="{ on_tour_progress: tour_range.toFixed(0), tour: tour.name }"
-            ng-click="goHome()" style="padding-bottom: 40px;">
-      Tour pausieren
-    </button>
+      <ion-item class="item">
+        <p>Besichtigte Ausflugsziele</p>
+        <progress max="100" value="{{tour_range.toFixed(0)}}"></progress>
+        <p>{{place.description}}</p><br>
+      </ion-item>
+      <ion-item class="item">
+        <button class="button button-positive button-full button-large"
+                type="button"
+                ng-show="tour_range < 100"
+                ui-sref="app.tour_start({tourId: tour.id, placeId: nextPlaceId})"
+                ng-click="placeIsVisited(tour_place.id)">
+          Weiter
+        </button>
+        <button class="button button-positive button-full button-large"
+                type="button"
+                ng-show="tour_range >= 100"
+                ion-track-tap="Tour beendet" ion-track-data="{ tour: tour.name }"
+                ui-sref="app.tour_finish({tourId: tour.id})"
+                ng-click="placeIsVisited(tour_place.id)">
+          Tour beenden
+        </button>
+        <button class="button button-light button-full"
+                type="button"
+                ion-track-tap="Tour pausiert" ion-track-data="{ on_tour_progress: tour_range.toFixed(0), tour: tour.name }"
+                ng-click="goHome()" style="padding-bottom: 40px;">
+          Tour pausieren
+        </button>
+      </ion-item>
+    </ion-list>
   </ion-content>
 </ion-view>

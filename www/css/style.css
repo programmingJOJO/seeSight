@@ -358,3 +358,8 @@ body {
 #question-form label.item.item-input.item-stacked-label div.range {
     padding: 2px 0;
 }
+
+/* Progress bar */
+progress {
+    margin: 0 0 15px 0;
+}

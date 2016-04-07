@@ -4,7 +4,7 @@
   </div>
   <ion-content class="has-subheader">
     <leaflet data-tap-disabled="true" center="center" defaults="defaults" height="150px" markers="markers"></leaflet>
-    <button class="ng-hide button button-default button-icon-only button-assertive button-full"
+    <button class="ng-hide button button-default button-assertive button-full"
             ui-sref="app.tour_start({tourId: tour.id, placeId: tour.tour_places[0].id})"
             ion-track-tap="Tour gestartet" ion-track-data="{ type: user_tour.completed ? 'Wiederholung' : 'Erstmaliger Start', tour: tour.name }"
             ng-click="newUserTour()" style="margin: 0;"
