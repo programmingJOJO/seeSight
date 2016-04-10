@@ -43,13 +43,13 @@
            ion-track-tap="Unvollständige Entdeckungen absolvieren" ion-track-data="{ unsolved_user_tour_challenges: unsolved_user_tour_challenges.length }"
            ng-click="showDismiss()">
           Unvollständige Entdeckungen
-          <span style="margin-right:3px; top: 25px;" class="badge badge-assertive">{{unsolved_user_tour_challenges.length}}</span>
+          <span style="margin-right:3px; top: 25px;" class="badge badge-assertive">{{unsolved_user_tour_challenges_count}}</span>
           <i class="icon ion-ios-arrow-right"></i>
         </a>
         <ion-item>
           Weitere Informationen
-          <p>{{user_tours.length > 0 ? 'Schon' : ''}} {{user_tours.length}} Tour{{user_tours.length == 1 ? '' : 'en'}} begonnen.</p>
-          <p>Davon {{completed_user_tours.length > 0 ? 'schon' : 'noch'}} {{completed_user_tours.length}} Tour{{completed_user_tours.length == 1 ? '' : 'en'}} absolviert.</p>
+          <p>{{partially_visited_tours_count > 0 ? 'Schon' : ''}} {{partially_visited_tours_count}} Tour{{partially_visited_tours_count == 1 ? '' : 'en'}} begonnen.</p>
+          <p>Davon {{completed_tours_count > 0 ? 'schon' : 'noch'}} {{completed_tours_count}} Tour{{completed_tours_count == 1 ? '' : 'en'}} absolviert.</p>
         </ion-item>
       </ion-list>
     </ion-content>

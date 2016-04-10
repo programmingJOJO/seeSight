@@ -85,18 +85,15 @@ app.controller('AppCtrl', function($scope, $rootScope, $state, $localstorage, $i
 
   document.addEventListener("deviceready", function() {
     $scope.isOnline = $cordovaNetwork.isOnline();
-    //$scope.$apply();
 
     // listen for Online event
     $rootScope.$on('$cordovaNetwork:online', function(event, networkState) {
       $scope.isOnline = true;
-      //$scope.$apply();
     });
 
     // listen for Offline event
     $rootScope.$on('$cordovaNetwork:offline', function(event, networkState) {
       $scope.isOnline = false;
-      //$scope.$apply();
     })
   }, false);
 
@@ -114,6 +111,9 @@ app.controller('AppCtrl', function($scope, $rootScope, $state, $localstorage, $i
       User.get({token: $localstorage.get("seeSight_user_token")}, function (user) {
         $scope.tags = user.tags;
         $scope.did_survey = user.did_survey;
+        $scope.completed_tours_count = user.completed_tours;
+        $scope.partially_visited_tours_count = user.partially_visited_tours;
+        $scope.unsolved_user_tour_challenges_count = user.unsolved_challenges;
       });
     }
 
@@ -130,12 +130,6 @@ app.controller('AppCtrl', function($scope, $rootScope, $state, $localstorage, $i
         }
       }
       $scope.fast_start_user_tours = $scope.fast_start_user_tours || $scope.user_tours;
-    });
-    UserTourChallenge.query({
-      token: $localstorage.get("seeSight_user_token")
-    }).$promise.then(function(response) {
-      $scope.user_tour_challenges = response;
-      $scope.unsolved_user_tour_challenges = $filter('filter')($scope.user_tour_challenges, { state: 3 }, false);
     });
   });
 
